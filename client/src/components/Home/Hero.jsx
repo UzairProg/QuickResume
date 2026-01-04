@@ -1,96 +1,106 @@
-import React from 'react'
-import { useRef } from 'react'
-
-const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import GetStartedButton from './GetStartedButton'
 
 const hero = () => {
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+
   return (
-    <div>
-<div class="bg-[url(https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/gradientBackground.png)] text-sm text-gray-500">
-    {/* <!-- Navbar --> */}
-        <header
-        class="flex items-center justify-between px-6 py-3 mt-5 md:py-4 shadow-sm max-w-5xl rounded-full mx-auto w-full bg-white">
-        <a href="https://prebuiltui.com">
-            <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/dummyLogo/prebuiltuiDummyLogo.svg" />
-        </a>
-        <nav id="menu"
-            class="
-            {isMenuOpen ? 'max-md:w-full overflow-hidden' : 'md:w-auto'}
-            max-md:absolute max-md:top-0 max-md:left-0 max-md:overflow-hidden items-center justify-center max-md:h-full max-md:w-0 transition-[width] bg-white/50 backdrop-blur flex-col md:flex-row flex gap-8 text-gray-900 text-sm font-normal">
-            <a class="hover:text-indigo-600" href="#">
-                Products
-            </a>
-            <a class="hover:text-indigo-600" href="#">
-                Customer Stories
-            </a>
-            <a class="hover:text-indigo-600" href="#">
-                Pricing
-            </a>
-            <a class="hover:text-indigo-600" href="#">
-                Docs
-            </a>
-            <button id="closeMenu" class="md:hidden text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </nav>
-        <div class="flex items-center space-x-4">
-            <button
-                class="size-8 flex items-center justify-center hover:bg-gray-100 transition border border-slate-300 rounded-md">
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M7.5 10.39a2.889 2.889 0 1 0 0-5.779 2.889 2.889 0 0 0 0 5.778M7.5 1v.722m0 11.556V14M1 7.5h.722m11.556 0h.723m-1.904-4.596-.511.51m-8.172 8.171-.51.511m-.001-9.192.51.51m8.173 8.171.51.511"
-                        stroke="#353535" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
-            <a class="hidden md:flex bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-indigo-700 transition"
-                href="#">
-                Sign up
-            </a>
-            <button id="openMenu" class="md:hidden text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-        </div>
-    </header>
+        <>
+            <style>
+                {`
+                    @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-    {/* <!-- Hero Section --> */}
-    <div class="h-[580px] flex flex-col items-center justify-center px-4 text-center">
-        <div class="flex flex-wrap items-center justify-center gap-2.5 mb-6 border border-gray-500/30 rounded-full bg-gray-300/15 pl-4 p-1 text-sm text-gray-800 max-w-full">
-            <p>Launching our new platform update.</p>
-            <div class="flex items-center cursor-pointer gap-2 bg-white border border-gray-500/30 rounded-2xl px-3 py-1 whitespace-nowrap">
-                <p>Explore</p>
-                <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 4.5h10.182m-4-3.5 4 3.5-4 3.5" stroke="#6B7280" stroke-width="1.5"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </div>
-        </div>
+                    *{
+                        font-family: "Poppins", sans-serif;
+                    }`
+                }
+            </style>
+            <section className='select-none flex flex-col items-center bg-linear-to-b from-[#D9D9FF] to-[#ffffff] px-4 py-4' >
+                <nav className="flex items-center justify-between gap-8 bg-white/60 border border-white rounded-full px-4 md:px-2 py-2.5 w-full max-w-3xl" >
+                    <a href="/" className='flex items-center md:pl-3'>
+                        <img src="/1.svg" alt="logo" width="55" height="50" className='pt-[2px]'/>
+                    </a>
+                    <div className='w-0.5 h-8 bg-gray-50 hidden md:flex'></div>
+                    <div id="menu" className={`max-md:absolute max-md:bg-white/70 max-md:h-[785px] max-md:overflow-hidden max-md:transition-[width] max-md:duration-300 max-md:top-0 max-md:left-0 max-md:flex-col max-md:justify-center max-md:backdrop-blur flex items-center justify-evenly gap-8 z-50 md:gap-10 flex-1 ${mobileOpen ? 'max-md:w-full' : 'max-md:w-0'}`}>
+                        <a href="#" onClick={() => setMobileOpen(false)} className="text-gray-600 hover:text-blue-800 text-sm hover:font-semibold">Home</a>
+                        <a href="#features" onClick={() => setMobileOpen(false)} className="text-gray-600 hover:text-blue-800 text-sm hover:font-semibold">Features</a>
+                        <a href="#testimonials" onClick={() => setMobileOpen(false)} className="text-gray-600 hover:text-blue-800 text-sm hover:font-semibold">Testimonials</a>
+                        <a href="#cta" onClick={() => setMobileOpen(false)} className="text-gray-600 hover:text-blue-800 text-sm hover:font-semibold">Contact</a>
+                        {/* <a href="#" onClick={() => setMobileOpen(false)} className="text-gray-600 hover:text-gray-700 text-sm">Contact Us</a> */}
 
-        <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold max-w-4xl text-gray-800">Solutions to Elevate Your
-            Business Growth</h1>
-        <p class="max-w-xl text-center mt-6 px-4">Unlock potential with tailored strategies designed for success.
-            Simplify challenges, maximize results, and stay ahead in the competitive market.</p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-            <button class="px-7 py-3 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-medium">Get Started Now</button>
-            <button class="group px-7 py-2.5 flex items-center gap-2 font-medium">
-                Learn more
-                <svg class="group-hover:translate-x-1 transition pt-0.5" width="12" height="9" viewBox="0 0 12 9"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 4.5h10.182m-4-3.5 4 3.5-4 3.5" stroke="#6B7280" stroke-width="1.5"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
-        </div>
-    </div>
-</div>
+                        <button id="close-menu" onClick={() => setMobileOpen(false)} className="md:hidden bg-violet-500 active:bg-violet-600 text-white p-2 rounded-md aspect-square font-medium transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
 
-    </div>
-  )
+                    <div className="flex items-center gap-2 md:pr-1">
+                        <Link to="/app?state=login" className="hidden md:inline-block bg-violet-600 hover:bg-violet-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm transition cursor-pointer">
+                            Login
+                        </Link>
+
+                        <button id="open-menu" onClick={() => setMobileOpen(true)} className="md:hidden text-gray-700 p-2 rounded-md aspect-square font-medium transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 12h16" />
+                                <path d="M4 18h16" />
+                                <path d="M4 6h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </nav>
+
+                <div className="flex flex-wrap items-center justify-center gap-2 pl-2 pr-4 py-1.5 mt-12 rounded-full bg-white/50 border border-white">
+                    <div className="relative flex size-3.5 items-center justify-center">
+                        <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping duration-300"></span>
+                        <span className="relative inline-flex size-2 rounded-full bg-green-600"></span>
+                    </div>
+                    <p className="text-sm text-black/60">Join 12,450+ brands growing with us</p>
+                </div>
+
+                <h1 className='text-4xl md:text-[66px]/19 text-center max-w-2xl mt-8 text-gray-800 bg-clip-text leading-tight font-medium'>Websites built to perform beautifully.</h1>
+                <p className="text-sm text-gray-600 text-center max-w-[630px] mt-4">
+                    We design high-impact websites that convert and scale. From sleek interfaces to full stack experiences, we bring your brand to life online.
+                </p>
+
+                <div className='flex gap-3 mt-10'>
+                    {/* <button className="bg-violet-600 hover:bg-violet-700 text-white text-xs md:text-sm px-6 py-3 rounded-lg transition cursor-pointer">
+                        Get Started Now
+                    </button> */}
+                    <Link to="/app"> <GetStartedButton text="Get Started Now" /> </Link>
+                    <Link to="#features" className="bg-white text-gray-500 active:scale-95 transition text-md flex items-center px-4 py-1 gap-2 rounded-xl w-max h-13  border border-gray-500/30">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.665 1.333 7.332 8.667m7.333-7.334L10 14.666l-2.667-6m7.333-7.333L1.332 6l6 2.667" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Explore more
+            </Link>
+                </div>
+
+                <div className='w-full max-w-[800px] h-[3px] mt-10 bg-linear-to-r from-white/10 via-violet-600 to-white/10'></div>
+
+                <div className='grid grid-cols-2 md:grid-cols-4 gap-8 py-18 max-w-[930px] w-full'>
+                    <div className='text-center'>
+                        <h2 className='font-medium text-2xl md:text-3xl text-gray-800'>20+</h2>
+                        <p className='text-xs md:text-sm text-gray-500'>Years Experience</p>
+                    </div>
+                    <div className='text-center'>
+                        <h2 className='font-medium text-2xl md:text-3xl text-gray-800'>12k+</h2>
+                        <p className='text-xs md:text-sm text-gray-500'>Projects Completed</p>
+                    </div>
+                    <div className='text-center'>
+                        <h2 className='font-medium text-2xl md:text-3xl text-gray-800'>5k+</h2>
+                        <p className='text-xs md:text-sm text-gray-500'>Happy Customers</p>
+                    </div>
+                    <div className='text-center'>
+                        <h2 className='font-medium text-2xl md:text-3xl text-gray-800'>5+</h2>
+                        <p className='text-xs md:text-sm text-gray-500'>Countries</p>
+                    </div>
+                </div>
+            </section>
+        </>
+    )
 }
 
 export default hero
