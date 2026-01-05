@@ -10,8 +10,8 @@ const Cta = () => {
                     font-family: 'Poppins', sans-serif;
                 }
             `}</style>
-            <section className="flex flex-col items-center justify-center mx-auto max-md:mx-2 max-md:px-2 max-w-5xl w-full text-center rounded-2xl py-16 bg-slate-100/70">
-                <h1 className="text-2xl md:text-3xl font-medium text-slate-900 max-w-2xl mt-5">
+            <section className="flex flex-col items-center justify-center mx-auto max-md:mx-2 max-md:px-2 max-w-5xl w-full text-center rounded-2xl py-10 bg-slate-100/70 mt-10">
+                <h1 className="text-2xl md:text-3xl font-medium text-slate-900 max-w-2xl">
                     Build beautiful websites with Prebuiltui.
                 </h1>
                 <p className="text-sm text-gray-500 max-w-lg mt-2">

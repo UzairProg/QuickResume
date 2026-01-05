@@ -60,9 +60,9 @@ const hero = () => {
                     <p className="text-sm text-black/60">Join 12,450+ brands growing with us</p>
                 </div>
 
-                <h1 className='text-4xl md:text-[66px]/19 text-center max-w-2xl mt-8 text-gray-800 bg-clip-text leading-tight font-medium'>Websites built to perform beautifully.</h1>
-                <p className="text-sm text-gray-600 text-center max-w-[630px] mt-4">
-                    We design high-impact websites that convert and scale. From sleek interfaces to full stack experiences, we bring your brand to life online.
+                <h1 className='text-4xl md:text-[66px]/19 text-center max-w-2xl mt-8 text-gray-800 bg-clip-text leading-tight font-medium'>Build Smarter Resumes with AI</h1>
+                <p className="text-md text-gray-600 text-center max-w-4xl mt-4">
+                    QuickResume helps you create and edit professional resumes with AI-assisted suggestions, real-time preview, and easy customization, so you can export clean, job-ready resumes without extra complexity.
                 </p>
 
                 <div className='flex gap-3 mt-10'>
@@ -70,12 +70,12 @@ const hero = () => {
                         Get Started Now
                     </button> */}
                     <Link to="/app"> <GetStartedButton text="Get Started Now" /> </Link>
-                    <Link to="#features" className="bg-white text-gray-500 active:scale-95 transition text-md flex items-center px-4 py-1 gap-2 rounded-xl w-max h-13  border border-gray-500/30">
+                    <a href="#features" className="bg-white text-gray-500 active:scale-95 transition text-md flex items-center px-4 py-1 gap-2 rounded-xl w-max h-13  border border-gray-500/30">
                 <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14.665 1.333 7.332 8.667m7.333-7.334L10 14.666l-2.667-6m7.333-7.333L1.332 6l6 2.667" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 Explore more
-            </Link>
+            </a>
                 </div>
 
                 <div className='w-full max-w-[800px] h-[3px] mt-10 bg-linear-to-r from-white/10 via-violet-600 to-white/10'></div>
