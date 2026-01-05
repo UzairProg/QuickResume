@@ -23,10 +23,23 @@ const Dashboard = () => {
   const [uploadNew, setUploadNew] = React.useState(false);
   const [resumeTitle, setResumeTitle] = React.useState("");
   const [resumeFile, setResumeFile] = React.useState(null);
+
+  const [deleteResume, setDeleteResume] = React.useState(false)
+  const [editResume, setEditResume] = React.useState(false)
+
+  const [editTitle, setEditTitle] = React.useState("")
+
   const [selectedResume, setSelectedResume] = React.useState(null);
 
   function fetchResumes() {
     setAllResumes(dummyResumeData)
+  }
+
+  function handleDeleteResume(idx) {
+    // console.log(e)
+    let cpyResume = [...allResumes]
+    cpyResume.splice(idx, 1);
+    setAllResumes(cpyResume)
   }
 
   function handleSubmit(e){
@@ -91,6 +104,30 @@ const Dashboard = () => {
     return;
   }
 
+  function handleEditTitle(e){
+    e.preventDefault();
+    if(!editTitle){
+      toast.dismiss();
+      toast.warn("Please enter a title for the resume", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+    let cpyResume = [...allResumes]
+    cpyResume[selectedResume].title = editTitle;
+    setAllResumes(cpyResume);
+    setEditResume(false);
+    setEditTitle("");
+  }
+
+
   useEffect(() => {
     fetchResumes();
   }, []); // empty dependency array to run only once on mount.. means it will run when component loads
@@ -138,11 +175,14 @@ const Dashboard = () => {
                 <div className='flex flex-row-reverse gap-2 px-2 transition-all opacity-0 group-hover:opacity-100 duration-300'> 
                   <Trash className='w-6 hover:bg-red-400/80 px-1 rounded transition-colors duration-200' onClick={(e)=>{
                     e.stopPropagation(); // stop bubbling of event.. clicking delete and div is getting clicked
-                    let cpyResume = [...allResumes]
-                    cpyResume.splice(idx, 1);
-                    setAllResumes(cpyResume)
+                    setSelectedResume(idx)
+                    setDeleteResume(true)
                   }}/>
-                  <Pencil className='w-6 hover:bg-gray-200/80 px-1 rounded transition-colors duration-200'/>
+                  <Pencil className='w-6 hover:bg-gray-200/80 px-1 rounded transition-colors duration-200' onClick={(e)=>{
+                    e.stopPropagation();
+                    setSelectedResume(idx)
+                    setEditResume(true)
+                  }}/>
                 </div>
 
                 {/* file edit icon with name*/}
@@ -242,6 +282,81 @@ const Dashboard = () => {
             <button onClick={handleUpload} type="submit" className="bg-blue-500 active:scale-95 transition w-56 h-10 rounded-full text-sm text-white cursor-pointer">Upload Resume</button>
         </div>
       )}
+
+      {
+        deleteResume && (
+                  <div className='fixed top-0 left-0 h-screen w-full bg-gray-200/40' onClick={(e)=>{
+                    
+                    if(e.target === e.currentTarget){
+                      setDeleteResume(false)
+                      return;
+                    }
+                  }}>
+                    <div className="fixed top-1/3 left-1/8 md:left-1/3 flex flex-col items-center bg- backdrop-blur-2xl shadow-md rounded-xl py-6 px-5 md:w-[460px] w-[370px] border border-gray-200">
+            <div className="flex items-center justify-center p-4 bg-red-100 rounded-full">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.875 5.75h1.917m0 0h15.333m-15.333 0v13.417a1.917 1.917 0 0 0 1.916 1.916h9.584a1.917 1.917 0 0 0 1.916-1.916V5.75m-10.541 0V3.833a1.917 1.917 0 0 1 1.916-1.916h3.834a1.917 1.917 0 0 1 1.916 1.916V5.75m-5.75 4.792v5.75m3.834-5.75v5.75" stroke="#DC2626" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+            </div>
+            <h2 className="text-gray-900 font-semibold mt-4 text-xl">Are you sure?</h2>
+            <p className="text-sm text-gray-600 mt-2 text-center">
+                Do you really want to continue? This action<br />cannot be undone.
+            </p>
+            <div className="flex items-center justify-center gap-4 mt-5 w-full">
+                <button onClick={()=>{
+                  setDeleteResume(false)
+                  setSelectedResume(null)
+                }} type="button" className="w-full md:w-36 h-10 rounded-md border border-gray-300 bg-white text-gray-600 font-medium text-sm hover:bg-gray-100 active:scale-95 transition">
+                    Cancel
+                </button>
+                <button onClick={()=>{
+                  handleDeleteResume(selectedResume)
+                  setDeleteResume(false)
+                  setSelectedResume(null)
+                  toast.success("Resume deleted successfully", {
+                    position: "top-center",
+                    autoClose: 3000,
+                  })
+                }} type="button" className="w-full md:w-36 h-10 rounded-md text-white bg-red-600 font-medium text-sm hover:bg-red-700 active:scale-95 transition">
+                    Confirm
+                </button>
+            </div>
+        </div>
+                  </div>
+        )
+      }
+
+      {
+        editResume && (
+          <div className='fixed top-0 left-0 bg-gray-300/20 backdrop-blur-xs flex justify-center items-center h-screen w-full' onClick={(e)=>{
+            if(e.target === e.currentTarget){
+              setEditResume(false)
+              return;
+            }
+          }}>
+
+            <div className='bg-gray-200/80 rounded-xl p-10 flex flex-col items-center justify-center gap-4'>
+            <CircleX onClick={()=>{
+              setEditResume(false);
+            }}className='h-10 w-8 hover:text-red-500 hover:-rotate-25 hover:scale-105 transition-all duration-300'/>
+          <div className=''>
+            <h2 className='text-2xl font-bold text-gray-800'>Edit Resume Title</h2>
+          </div>
+
+          <form className="flex items-center justify-center gap-3 max-w-md w-full">
+            <div onChange={(e)=>{
+              setEditTitle(e.target.value);
+              // console.log(resumeTitle)
+            }}className="flex items-center w-full border gap-2 bg-white text-white/90 border-gray-500/30 h-12 rounded-full overflow-hidden">
+                <input value={editTitle} type="title" placeholder="Enter Resume Title" className="w-full h-full pl-6 outline-none text-sm placeholder-gray-500 bg-transparent text-black" required />
+            </div>
+            <button onClick={(e)=>handleEditTitle(e)} type="submit" className="bg-blue-500 active:scale-95 transition w-56 h-10 rounded-full text-sm text-white cursor-pointer">Edit Resume</button>
+          </form>
+        </div>
+
+          </div>
+        )
+      }
 
     </div>
   )
