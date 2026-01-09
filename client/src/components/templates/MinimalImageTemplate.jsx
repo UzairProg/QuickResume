@@ -71,7 +71,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                     </section>
 
                     {/* Education */}
-                    {data.education && data.education.length > 0 && (
+                    {Array.isArray(data.education) && data.education.length > 0 && (
                         <section className="mb-8">
                             <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
                                 EDUCATION
@@ -91,7 +91,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                     )}
 
                     {/* Skills */}
-                    {data.skills && data.skills.length > 0 && (
+                    {Array.isArray(data.skills) && data.skills.length > 0 && (
                         <section>
                             <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
                                 SKILLS
@@ -121,7 +121,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                     )}
 
                     {/* Experience */}
-                    {data.experience && data.experience.length > 0 && (
+                    {Array.isArray(data.experience) && data.experience.length > 0 && (
                         <section>
                             <h2 className="text-sm font-semibold tracking-widest mb-4" style={{ color: accentColor }} >
                                 EXPERIENCE
@@ -155,7 +155,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                     )}
 
                     {/* Projects */}
-                    {data.project && data.project.length > 0 && (
+                    {Array.isArray(data.project) && data.project.length > 0 && (
                         <section>
                             <h2 className="text-sm uppercase tracking-widest font-semibold" style={{ color: accentColor }}>
                                 PROJECTS

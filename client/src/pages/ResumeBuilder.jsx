@@ -7,7 +7,7 @@ import ResumePreview from '../components/Preview/ResumePreview';
 import TemplateSelector from '../components/Selector/templateSelector';
 import AccentSelector from '../components/Selector/accentSelector';
 import ProfessionalSummaryForm from '../components/Forms/ProfessionalSummaryForm';
-import ProfessionalExperienceForm from '../components/Forms/ProfessionalExpirienceForm';
+import ProfessionalExperienceForm from '../components/Forms/ProfessionalExperienceForm';
 import EducationForm from '../components/Forms/EducationForm';
 
 const ResumeBuilder = () => {
@@ -23,12 +23,12 @@ const ResumeBuilder = () => {
     title: "",
     personal_info: {},
     professional_summary: "",
-    expirience: [],
+    experience: [],
     education: [],
     skills: [],
     project: [],
     template: "",
-    accent_color: "",
+    accent_color: "blue",
     public: false
   })
 
@@ -66,7 +66,7 @@ const ResumeBuilder = () => {
 
       {/* main section */}
 
-      <div className=' flex gap-8 mt-4 rounded-xl overflow-hidden'>
+      <div className=' flex gap-8 mt-4 rounded-xl '>
         {/* left part */}
         <div className='relative w-2/5 ml-1 border border-gray-200 p-4 rounded-xl max-h-fit'>
           
@@ -77,7 +77,7 @@ const ResumeBuilder = () => {
           {/* buttons and navigation */}
             <div className='flex justify-between w-full mt-5 ml-2 mb-2'>
               {/* left sub part buttons */}
-              <div className='flex gap-2'>
+              <div className='flex gap-2 h-full'>
                 <TemplateSelector data={resumeData.template} onChange={(tempId) => {
                   setResumeData(prev => ({...prev, template: tempId}))
                 }}/>
@@ -137,8 +137,8 @@ const ResumeBuilder = () => {
                     }
 
                     {activeSection.id === "experience" && (
-                      <ProfessionalExperienceForm data={resumeData.expirience} onChange={(expirience)=>{
-                        setResumeData(prev => ({...prev, expirience: expirience}))
+                      <ProfessionalExperienceForm data={resumeData.experience} onChange={(experience)=>{
+                        setResumeData(prev => ({...prev, experience: experience}))
                       }}/>
                     )
                     }
