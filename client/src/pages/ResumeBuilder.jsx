@@ -57,6 +57,22 @@ const ResumeBuilder = () => {
   useEffect(() => {
     loadExistingResume();
   },[])
+
+  const handleShare = () => {
+    const frontendUrl = window.location.href.split('/app')[0];
+    const resumeUrl = frontendUrl + '/view/' + resumeId
+
+    if(navigator.share){
+      navigator.share({url: resumeUrl, text: "Check out my resume!"})
+    }else{
+      alert("Sharing not supported in this browser. Please copy the link: " + resumeUrl)
+    }
+  }
+
+  const downloadResume = () => {
+    window.print();
+  }
+
   return (
     <div className='flex flex-col select-none py-6 px-16'>
       <ToastContainer />
@@ -187,7 +203,7 @@ const ResumeBuilder = () => {
         <div className='w-3/5 relative '>
           <div className='absolute flex flex-row-reverse right-5 -top-6 gap-4' >
 
-            <button className='px-3 group h-min py-1 flex items-center justify-center bg-purple-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-purple-500'>
+            <button onClick={downloadResume} className='px-3 group h-min py-1 flex items-center justify-center bg-purple-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-purple-500'>
               <FileDown className='w-5 h-6 wiggle group-hover:text-purple-800'/>
               <span className='text-sm '>Download</span>
             </button>
@@ -216,7 +232,7 @@ const ResumeBuilder = () => {
 
             {
               resumeData.public && (
-                <button className='px-3 group h-min py-1 flex items-center justify-center bg-green-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-green-500'>
+                <button onClick={handleShare}className='px-3 group h-min py-1 flex items-center justify-center bg-green-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-green-500'>
                   <Share2 className='w-5 h-6 wiggle group-hover:text-green-800'/>
                   <span className='text-sm '>Share</span>
                 </button>

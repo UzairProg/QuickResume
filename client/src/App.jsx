@@ -28,7 +28,7 @@ const App = () => {
         <Outlet /> = hole in the frame
         */}
 
-        <Route path="preview/:resumeId" element={<Preview />} />
+        <Route path="view/:resumeId" element={<Preview />} />
 
         <Route path="login" element={<Login />} />
       </Routes>
