@@ -38,7 +38,7 @@ function ProfessionalExperienceForm({data = [], onChange}) {
             <button onClick={()=>{
                   // console.log("clicled")
                   addExperience();
-                }} className='group bg-gray-200 flex items-center gap-2 h-min py-1 px-2 rounded-md border border-transparent hover:bg-blue-200 hover:border-blue-400 transition-all'>
+                }} className='group active:scale-96 bg-gray-200 flex items-center gap-2 h-min py-1 px-2 rounded-md border border-transparent hover:bg-blue-200 hover:border-blue-400 transition-all'>
                 <PlusCircle className='size-5 text-blue-600 font-extrabold wiggle duration-300 transition-all'/>
                 <p className='text-sm text-blue-600'>Add Experience</p>
             </button>

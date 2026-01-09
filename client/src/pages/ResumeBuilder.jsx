@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { dummyResumeData } from '../assets/assets';
-import { ArrowLeftFromLine, BriefcaseBusiness, ChevronLeft, ChevronRight, FileTextIcon, Folders, GraduationCap, LucideLayoutTemplate, Palette, Sparkles, User } from 'lucide-react';
+import { ArrowLeftFromLine, BriefcaseBusiness, ChevronLeft, ChevronRight, Eye, EyeClosed, FileDown, FileTextIcon, Folders, GraduationCap, LucideLayoutTemplate, Palette, Share2, Sparkles, User } from 'lucide-react';
 import PersonalInformationForm from '../components/Forms/PersonalInformationForm';
 import ResumePreview from '../components/Preview/ResumePreview';
 import TemplateSelector from '../components/Selector/templateSelector';
@@ -9,6 +9,9 @@ import AccentSelector from '../components/Selector/accentSelector';
 import ProfessionalSummaryForm from '../components/Forms/ProfessionalSummaryForm';
 import ProfessionalExperienceForm from '../components/Forms/ProfessionalExperienceForm';
 import EducationForm from '../components/Forms/EducationForm';
+import ProjectForm from '../components/Forms/ProjectForm';
+import SkillsForm from '../components/Forms/SkillsForm';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ResumeBuilder = () => {
 
@@ -37,8 +40,8 @@ const ResumeBuilder = () => {
     { id: "professional_summary", title: "Professional Summary", icon: FileTextIcon },
     { id: "experience", title: "Experience", icon: BriefcaseBusiness },
     { id: "education", title: "Education", icon: GraduationCap },
-    { id: "skills", title: "Skills", icon: Sparkles },
     { id: "projects", title: "Projects", icon: Folders },
+    { id: "skills", title: "Skills", icon: Sparkles },
   ]
 
   const activeSection = sections[activeSectionIndex];
@@ -56,7 +59,7 @@ const ResumeBuilder = () => {
   },[])
   return (
     <div className='flex flex-col select-none py-6 px-16'>
-
+      <ToastContainer />
       {/* back to home */}
       <div onClick={()=>{
         navigate(`/app`);
@@ -154,29 +157,72 @@ const ResumeBuilder = () => {
 
                     {activeSection.id === "skills" && (
                       <div>
-                        Skills Form
+                        <SkillsForm data={resumeData.skills} onChange={(skills)=>{
+                          setResumeData(prev => ({...prev, skills: skills}))
+                        }}/>
                       </div>
                     )
                     }
 
                     {activeSection.id === "projects" && (
                       <div>
-                        Projects Form
+                        <ProjectForm data={resumeData.project} onChange={(projects)=>{
+                          setResumeData(prev => ({...prev, project: projects}))
+                        }}/>
                       </div>
                     )
                     }
-
-
-
-                    
                   </div>
                   
                 }
+
+                <button type="submit" className='border border-gray-300 hover:bg-blue-700/85 mt-8 active:scale-98 ml-2 px-4 py-2 text-white rounded-md bg-blue-600/90'>
+                  Save Changes
+                </button>
             </div>
+            
         </div>
 
         {/* right part */}
-        <div className='w-3/5 '>
+        <div className='w-3/5 relative '>
+          <div className='absolute flex flex-row-reverse right-5 -top-6 gap-4' >
+
+            <button className='px-3 group h-min py-1 flex items-center justify-center bg-purple-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-purple-500'>
+              <FileDown className='w-5 h-6 wiggle group-hover:text-purple-800'/>
+              <span className='text-sm '>Download</span>
+            </button>
+
+            <button onClick={()=>{
+              setResumeData(prev => ({...prev, public: !prev.public}))
+              toast.dismiss()
+              toast.success(`Resume is now ${!resumeData.public ? "Public" : "Private"}`, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            })
+            }}className='px-3 group h-min py-1 flex items-center justify-center bg-blue-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-blue-500'>
+              <EyeClosed className={`w-5 h-6 wiggle group-hover:text-blue-800 ${resumeData.public ? "hidden" : ""}`}/>
+              <Eye className={`w-5 h-6 wiggle group-hover:text-blue-800 ${resumeData.public ? "" : "hidden"}`}/>
+              <span className={`text-sm ${resumeData.public ? "" : "hidden"}`}>Public</span>
+              <span className={`text-sm ${resumeData.public ? "hidden" : ""}`}>Private</span>
+            </button>
+
+            
+
+            {
+              resumeData.public && (
+                <button className='px-3 group h-min py-1 flex items-center justify-center bg-green-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-green-500'>
+                  <Share2 className='w-5 h-6 wiggle group-hover:text-green-800'/>
+                  <span className='text-sm '>Share</span>
+                </button>
+              )
+            }
+          </div>
           <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} classes="mx-auto my-4 shadow-lg"/>
         </div>
       </div>
