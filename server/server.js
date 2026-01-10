@@ -16,6 +16,13 @@ app.get('/', (req, res) => {
     res.send('QuickResume Server is running');
 });
 
+import userRoutes from './routes/userRoutes.js';
+import resumeRoutes from './routes/resumeRoutes.js';
+
+app.use('/api/users', userRoutes);
+app.use('/api/resumes', resumeRoutes);
+
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
