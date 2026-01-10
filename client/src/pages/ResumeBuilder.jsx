@@ -76,6 +76,7 @@ const ResumeBuilder = () => {
   return (
     <div className='flex flex-col select-none py-6 px-16'>
       <ToastContainer />
+      
       {/* back to home */}
       <div onClick={()=>{
         navigate(`/app`);
@@ -243,7 +244,150 @@ const ResumeBuilder = () => {
         </div>
       </div>
 
+            {/* styling for printing perfectly !ignore the style code.. above is the resume builder code*/}
+
+            <style jsx>
+        {
+          `
+          @media print {
+            @page {
+              margin: 0;
+              padding: 0;
+              size: A4;
+            }
+            
+            body, html {
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+            
+            /* Hide everything except resume content */
+            .flex.gap-2.items-center,
+            .absolute.flex.flex-row-reverse,
+            .w-2\\/5,
+            hr {
+              display: none !important;
+            }
+            
+            /* Remove top padding from main container */
+            .flex.flex-col.select-none {
+              padding: 0 !important;
+              margin: 0 !important;
+            }
+            
+            /* Remove gap and spacing */
+            .flex.gap-8.mt-4 {
+              gap: 0 !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+            
+            /* Full width resume */
+            .w-3\\/5 {
+              width: 100% !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+            
+            /* Resume container */
+            .w-full.bg-gray-100 {
+              width: 100% !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              background: white !important;
+            }
+            
+            /* Resume preview */
+            #resume-preview {
+              width: 100% !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              box-shadow: none !important;
+              border: none !important;
+              page-break-inside: avoid !important;
+            }
+            
+            /* Remove margins from wrapper */
+            .mx-auto.my-4.shadow-lg {
+              margin: 0 !important;
+              box-shadow: none !important;
+              padding: 0 !important;
+            }
+            
+            /* Compress Modern, Classic, and Minimal templates for single page */
+            div[data-template="modern"] .p-8 {
+              padding: 0.75rem !important;
+            }
+            
+            div[data-template="modern"] header {
+              padding: 1rem !important;
+            }
+            
+            div[data-template="modern"] h2 {
+              font-size: 1.25rem !important;
+              margin-bottom: 0.75rem !important;
+            }
+            
+            div[data-template="modern"] section {
+              margin-bottom: 1rem !important;
+            }
+            
+            div[data-template="modern"] .space-y-6 {
+              gap: 1rem !important;
+            }
+            
+            /* Classic template compression */
+            div[data-template="classic"] {
+              padding: 0.75rem !important;
+            }
+            
+            div[data-template="classic"] header {
+              margin-bottom: 0.75rem !important;
+              padding-bottom: 0.5rem !important;
+            }
+            
+            div[data-template="classic"] h2 {
+              font-size: 1.1rem !important;
+              margin-bottom: 0.5rem !important;
+            }
+            
+            div[data-template="classic"] section {
+              margin-bottom: 0.75rem !important;
+            }
+            
+            /* Minimal template compression */
+            div[data-template="minimal"] {
+              padding: 0.75rem !important;
+            }
+            
+            div[data-template="minimal"] header {
+              margin-bottom: 0.75rem !important;
+            }
+            
+            div[data-template="minimal"] h1 {
+              font-size: 2.5rem !important;
+              margin-bottom: 0.5rem !important;
+            }
+            
+            div[data-template="minimal"] h2 {
+              font-size: 1rem !important;
+              margin-bottom: 0.5rem !important;
+            }
+            
+            div[data-template="minimal"] section {
+              margin-bottom: 0.75rem !important;
+            }
+            
+            div[data-template="minimal"] .space-y-6 {
+              gap: 0.75rem !important;
+            }
+          }
+          `
+        }
+      </style>
     </div>
+
+    
   )
 }
 

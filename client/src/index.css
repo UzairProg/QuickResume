@@ -21,3 +21,24 @@
 .group:hover .wiggle {
   animation: wiggle 500ms ease-in-out;
 }
+
+/* Print Styles */
+@media print {
+  @page {
+    margin: 0 !important;
+    padding: 0 !important;
+    size: A4;
+  }
+  
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Hide navbar */
+  nav,
+  div[class*="border-b"][class*="shadow-md"] {
+    display: none !important;
+  }
+}
+
