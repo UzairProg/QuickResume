@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import ResumePreview from '../components/Preview/ResumePreview';
-import Loader from '../components/Loader/Loader';
+import ResumePreview from '../components/Preview/ResumePreview.jsx';
+import Loader from '../components/Loader/Loader.jsx';
 import api from '../configs/api';
 
 const Preview = () => {

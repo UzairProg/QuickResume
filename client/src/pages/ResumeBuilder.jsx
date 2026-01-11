@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeftFromLine, BriefcaseBusiness, ChevronLeft, ChevronRight, Eye, EyeClosed, FileDown, FileTextIcon, Folders, GraduationCap, LucideLayoutTemplate, Palette, Share2, Sparkles, User } from 'lucide-react';
-import PersonalInformationForm from '../components/Forms/PersonalInformationForm';
+import PersonalInformationForm from '../components/Forms/PersonalInformationForm.jsx';
 import ResumePreview from '../components/Preview/ResumePreview.jsx';
-import TemplateSelector from '../components/Selector/templateSelector.jsx';
-import AccentSelector from '../components/Selector/accentSelector.jsx';
+import TemplateSelector from '../components/Selector/TemplateSelector.jsx';
+import AccentSelector from '../components/Selector/AccentSelector.jsx';
 import ProfessionalSummaryForm from '../components/Forms/ProfessionalSummaryForm.jsx';
 import ProfessionalExperienceForm from '../components/Forms/ProfessionalExperienceForm.jsx';
 import EducationForm from '../components/Forms/EducationForm.jsx';
