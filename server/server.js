@@ -18,10 +18,11 @@ app.get('/', (req, res) => {
 
 import userRoutes from './routes/userRoutes.js';
 import resumeRoutes from './routes/resumeRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 
 app.use('/api/users', userRoutes);
 app.use('/api/resumes', resumeRoutes);
-
+app.use('/api/ai', aiRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

@@ -1,5 +1,9 @@
-import React, {userState} from 'react'
+import React, {useState} from 'react'
 import { Link } from 'react-router-dom'
+import api from "../configs/api";
+import { login } from "../app/features/authSlice";
+import { toast, ToastContainer } from 'react-toastify';
+import { useDispatch } from "react-redux";
 const Login = () => {
   
   const query = new URLSearchParams(window.location.search);
@@ -9,8 +13,11 @@ const Login = () => {
 
   const [formData, setFormData] = React.useState({
     email: "",
-    password: ""
+    password: "",
+    name: ""
   });
+
+  const dispatch = useDispatch();
 
   function handleFromData(e) {
     const { name, value } = e.target;
@@ -18,11 +25,29 @@ const Login = () => {
       ...prevData,
       [name]: value,
     }));
-    console.log(formData)
+    // console.log(formData)
   }
 
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await api.post(`/api/users/${state}`, formData);
+
+      dispatch(login(data));
+
+      localStorage.setItem("token", data.token);
+        console.log("sssobject")
+        toast.success(data.message, {autoClose: 1500});
+    //   toast.success("Logged in successfully");
+    } catch (error) {
+      toast(error?.response?.data?.message || error.message);
+    }
+  };
+
+
 return (
-        <main className="flex items-center justify-center w-full px-4 min-h-screen">
+        <div className="flex items-center justify-center w-full px-4 min-h-screen">
+            <ToastContainer position="top-center" reverseOrder={false} />
             <form className="flex w-full flex-col max-w-96">
         
                 <Link to="/" className="mb-8" title="Go to home">
@@ -36,6 +61,25 @@ return (
                         ? "Please enter your email and password to login."
                         : "Please enter email and password to signUp."}
                 </p>
+
+                {
+                    state === "signup" ? (
+                        <>
+                            <div className="mt-4" onChange={(e)=>{handleFromData(e)}}>
+                    <label className="font-medium">Name</label>
+                    <input
+                        placeholder="Please enter your name"
+                        className="mt-2 rounded-md ring ring-gray-200 focus:ring-2 focus:ring-indigo-600 outline-none px-3 py-3 w-full"
+                        required
+                        type="name"
+                        name="name"
+                        value={formData.name}
+                    />
+                </div>
+                        </>
+                    ):
+                    null
+                }
         
                 <div className="mt-4" onChange={(e)=>{handleFromData(e)}}>
                     <label className="font-medium">Email</label>
@@ -62,10 +106,11 @@ return (
                 </div>
         
                 <button
+                    onClick={handleSubmit}
                     type="submit"
                     className="mt-4 py-3 w-full cursor-pointer rounded-md bg-indigo-600 text-white transition hover:bg-indigo-700"
                 >
-                    Login
+                    {state === "login" ? "Login" : "Sign up"}
                 </button>
                 <p className='text-center py-8'>
                     {state === "login" ? (
@@ -99,7 +144,7 @@ return (
                     )}
                 </p>
             </form>
-        </main>
+        </div>
     );
 }
 

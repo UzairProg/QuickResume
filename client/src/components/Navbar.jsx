@@ -1,10 +1,12 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
 
-  const [name, setName] = React.useState("User");
+  // const [name, setName] = React.useState("User");
+  const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   return (
@@ -14,11 +16,13 @@ function Navbar() {
         </Link>
 
         <p className='text-xl'>
-          Welcome, <span className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 bg-clip-text text-transparent animate-pulse font-semibold">{name}</span>
+          Welcome, <span className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 bg-clip-text text-transparent animate-pulse font-semibold capitalize">{user?.name}</span>
         </p>
 
         <div onClick={()=>{
-            navigate.to("/");
+            navigate("/");
+            localStorage.removeItem("token");
+            window.location.reload();
         }}className='px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-full text-sm cursor-pointer'>
             Logout
         </div>

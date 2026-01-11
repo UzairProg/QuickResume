@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import GetStartedButton from './GetStartedButton'
+import { useSelector } from 'react-redux'
 
 const hero = () => {
+    const {user} = useSelector((state) => state.auth);
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
   return (
@@ -38,7 +40,7 @@ const hero = () => {
                     </div>
 
                     <div className="flex items-center gap-2 md:pr-1">
-                        <Link to="/app?state=login" className="hidden md:inline-block bg-violet-600 hover:bg-violet-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm transition cursor-pointer">
+                        <Link hidden={user} to="/app?state=login" className="hidden md:inline-block bg-violet-600 hover:bg-violet-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-full text-xs md:text-sm transition cursor-pointer">
                             Login
                         </Link>
 

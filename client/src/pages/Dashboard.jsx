@@ -4,6 +4,8 @@ import { BadgePlus, FileUp, Trash, Pencil, FileUser, CircleX, Heading1    } from
 import { dummyResumeData } from '../assets/assets';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import api from '../configs/api';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => { 
   const navigate = useNavigate();
@@ -31,6 +33,8 @@ const Dashboard = () => {
 
   const [selectedResume, setSelectedResume] = React.useState(null);
 
+  const { user, token } = useSelector((state) => state.auth);
+
   function fetchResumes() {
     setAllResumes(dummyResumeData)
   }
@@ -43,7 +47,9 @@ const Dashboard = () => {
   }
 
   function handleSubmit(e){
-    e.preventDefault();
+    
+    try {
+      e.preventDefault();
     if(!resumeTitle){
       toast.dismiss();
       toast.warn("Please enter a title for the resume", {
@@ -58,15 +64,22 @@ const Dashboard = () => {
       });
       return;
     } 
-    const newResume = {
-      _id: Math.random().toString(16).slice(2),
-      title: resumeTitle,
-      updatedAt: new Date().toISOString(),
+
+      const newResume = api.post("/api/resumes/create", {
+        title: resumeTitle,
+      }, {
+        headers: { Authorization: token },
+      });
+      setAllResumes(...allResumes, newResume);
+      setCreateNew(false);
+      setResumeTitle("");
+      navigate(`builder/${newResume._id}`);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message, {
+        position: "top-center",
+        autoClose: 5000,
+      });
     }
-    setAllResumes([newResume, ...allResumes]);
-    setCreateNew(false);
-    setResumeTitle("");
-    navigate(`builder/:res123`);
   }
 
   function handleUpload(e){
