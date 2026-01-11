@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
-import Login from "./Login";
+import Login from "./Login.jsx";
 import Loader from '../components/Loader/Loader.jsx'
 import { useSelector } from 'react-redux'
 import { toast, ToastContainer } from 'react-toastify';
