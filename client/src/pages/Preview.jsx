@@ -3,10 +3,12 @@ import { useParams } from 'react-router-dom';
 import ResumePreview from '../components/Preview/ResumePreview.jsx';
 import Loader from '../components/Loader/Loader.jsx';
 import api from '../configs/api';
+import { useNavigate } from 'react-router-dom';
 
 const Preview = () => {
   const {resumeId} = useParams();
 
+  const navatigator =  useNavigate();
   const [isLoading, setIsLoading] = React.useState(true);
   const [resumeData, setResumeData] = React.useState(null);
 
@@ -28,12 +30,12 @@ const Preview = () => {
     setIsLoading(true);
 
     // Try local dummy first (dev fallback)
-    const local = dummyResumeData.find(resume => resume._id === resumeId);
-    if (local) {
-      setResumeData(local);
-      setIsLoading(false);
-      return;
-    }
+    // const local = dummyResumeData.find(resume => resume._id === resumeId);
+    // if (local) {
+    //   setResumeData(local);
+    //   setIsLoading(false);
+    //   return;
+    // }
 
     try {
       const { data } = await api.get(`/api/resumes/public/${resumeId}`);
@@ -70,8 +72,9 @@ const Preview = () => {
           </div>
         ) : (
           <div className='flex h-screen w-full justify-center items-center bg-black'>
-
+            <img src="/1.svg" alt="logo" className='fixed top-5 left-5 w-25 h-25 active:scale-97' onClick={()=>{navatigator("/");}}/>
         <div className="flex flex-col items-center justify-center text-sm max-md:px-4 py-20">
+            
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">
                 404 Not Found
             </h1>

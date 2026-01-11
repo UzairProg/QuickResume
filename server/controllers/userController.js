@@ -41,7 +41,8 @@ export const registerUser = async (req, res) => {
             user: {
                 id: newUser._id,
                 name: newUser.name,
-                email: newUser.email
+                email: newUser.email,
+                aiCredits: newUser.aiCredits
             },
             token
         });
@@ -76,7 +77,8 @@ export const loginUser = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                aiCredits: user.aiCredits
             },
             token
         });
@@ -116,3 +118,46 @@ export const getUserResume = async (req, res) => {
     }
 }
 
+
+export const googleAuthUser = async (req, res) => {
+  const { email, name, avatar } = req.body;
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    user = await User.create({
+      email,
+      name,
+      avatar,
+      authProvider: "google",
+    });
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+            message: "Signup successful",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user?.avatar,
+                aiCredits: user.aiCredits
+            },
+            token
+        });
+   return;
+  }
+    const token = generateToken(user._id);
+
+  res.status(200).json({
+            message: "Login successful",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar,
+                aiCredits: user.aiCredits
+            },
+            token
+        });
+}

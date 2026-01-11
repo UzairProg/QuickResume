@@ -2,9 +2,13 @@ import { BriefcaseBusiness, PlusCircle, Trash2, Wand } from 'lucide-react'
 import React from 'react'
 import api from '../../configs/api'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateCredits } from '../../app/features/authSlice'
 
 function ProfessionalExperienceForm({data = [], onChange}) {
 
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
   const [loadingIdx, setLoadingIdx] = React.useState(null);
 
   function addExperience(){
@@ -39,12 +43,32 @@ function ProfessionalExperienceForm({data = [], onChange}) {
     }
     try {
       setLoadingIdx(idx);
-      const { data: resp } = await api.post('/api/ai/enhance-job-description', { content });
+      const { data: resp } = await api.post('/api/ai/enhance-job-description', { content }, {
+        headers: { Authorization: token }
+      });
       if (resp?.enhancedDescription) {
         updateExperience(idx, 'description', resp.enhancedDescription);
+        
+        // Fetch updated credits from server
+        try {
+          const { data: userData } = await api.get('/api/users/data', {
+            headers: { Authorization: token }
+          });
+          if (userData?.user?.aiCredits !== undefined) {
+            dispatch(updateCredits(userData.user.aiCredits));
+          }
+        } catch (e) {
+          console.error('Failed to sync credits');
+        }
+        
+        toast.success("Job description enhanced!");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'AI enhance failed');
+      if (error.response?.status === 403) {
+        toast.error("All AI credits used!");
+      } else {
+        toast.error(error?.response?.data?.message || 'AI enhance failed');
+      }
     } finally {
       setLoadingIdx(null);
     }

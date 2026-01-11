@@ -13,8 +13,22 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
     type: String,
-    required: true,
+    // required: true,
+    },
+    avatar: {
+    type: String,
+    default: null,
+    },
+    authProvider: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local",
+    },
+    aiCredits: {
+    type: Number,
+    default: 2,
     }
+    
 }, { timestamps: true });
 
 UserSchema.methods.comparePassword = function(password) {

@@ -65,6 +65,8 @@ const ResumeBuilder = () => {
       setRemoveBackground(mapped.personal_info?.imageBackgroundRemoved || false);
       document.title = `${data.resume.title} - QuickResume`;
     }
+
+    
   }
 
   const mapToServer = (client) => {

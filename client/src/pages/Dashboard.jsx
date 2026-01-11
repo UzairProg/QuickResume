@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
-import { BadgePlus, FileUp, Trash, Pencil, FileUser, CircleX, Heading1    } from 'lucide-react'
+import { BadgePlus, FileUp, Trash, Pencil, FileUser, CircleX, Sparkles    } from 'lucide-react'
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from '../configs/api';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCredits } from '../app/features/authSlice';
 import pdfToText from 'react-pdftotext'
 
 const Dashboard = () => { 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const colors = [
   '#3B82F6', // Vibrant Blue
   '#1E40AF', // Deep Royal Blue
@@ -156,6 +158,19 @@ const Dashboard = () => {
       }, {
         headers: { Authorization: token },
       });
+      
+      // Fetch updated credits from server
+      try {
+        const { data: userData } = await api.get('/api/users/data', {
+          headers: { Authorization: token }
+        });
+        if (userData?.user?.aiCredits !== undefined) {
+          dispatch(updateCredits(userData.user.aiCredits));
+        }
+      } catch (e) {
+        console.error('Failed to sync credits');
+      }
+      
       // console.log(data, "datatatatatatattatas")
       setEditTitle("");
       setResumeFile(null);
@@ -166,10 +181,17 @@ const Dashboard = () => {
       navigate(`builder/${data.resume._id}`);
       return;
     } catch (error) {
-      toast.error(error?.response?.data?.message || error.message, {
-        position: "top-center",
-        autoClose: 5000,
-      });
+      if (error.response?.status === 403) {
+        toast.error("All AI credits used! You have no credits remaining.", {
+          position: "top-center",
+          autoClose: 5000,
+        });
+      } else {
+        toast.error(error?.response?.data?.message || error.message, {
+          position: "top-center",
+          autoClose: 5000,
+        });
+      }
     }
     setIsLoading(false);
   }
@@ -227,29 +249,57 @@ const Dashboard = () => {
     <div className='min-w-full min-h-screen ml-20 mt-10 select-none'>
       <ToastContainer />
 
-      <div className='flex gap-10 border-b border-dashed border-gray-400 w-fit mb-10 py-6'>
-        <div>
-            <div className='group h-50 w-40 border border-dashed bg-white flex flex-col items-center justify-center gap-4 rounded-lg cursor-pointer hover:shadow-lg transition'
+      <div className={`flex gap-6 mb-10 py-6 ${(createNew || uploadNew || deleteResume || editResume || isLoading) ? 'pointer-events-none opacity-50' : ''}`}>
+        {/* Create New Resume Card */}
+        <div className='relative group'>
+            <div className='h-56 w-72 border-2 border-dashed border-blue-300 bg-gradient-to-br from-blue-50 to-white flex flex-col items-center justify-center gap-3 rounded-xl cursor-pointer hover:shadow-xl hover:border-blue-500 transition-all duration-300 overflow-hidden'
             onClick={()=>{
                   setCreateNew(true)
           }}>
-              <BadgePlus className='w-20 h-10 group-hover:text-blue-700 group-hover:rotate-90 transition-all duration-400'/> 
-            <h2 className='group-hover:text-blue-700 group-hover:font-semibold transition-all duration-400'>Create Resume</h2>
-            </div> 
+              {/* Animated background effect */}
+              <div className='absolute inset-0 bg-gradient-to-br from-blue-100/0 to-blue-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+              
+              <div className='relative z-10 flex flex-col items-center gap-3'>
+                <div className='p-4 bg-blue-100 rounded-full group-hover:bg-blue-200 transition-all duration-300 group-hover:scale-110'>
+                  <BadgePlus className='w-10 h-10 text-blue-600 group-hover:rotate-90 transition-all duration-400'/> 
+                </div>
+                <h2 className='text-lg font-semibold text-gray-800 group-hover:text-blue-700 transition-all duration-300'>Create New Resume</h2>
+                <p className='text-xs text-center text-gray-500 px-6 leading-relaxed'>Start from scratch with our intuitive builder</p>
+              </div>
+            </div>
+            
+            {/* Feature badge */}
+            <div className='absolute -top-2 -right-2 bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-md font-medium'>
+              Fresh Start
+            </div>
           </div> 
 
-          <div>
+          {/* Upload & AI Scan Card */}
+          <div className='relative group'>
             <button onClick={()=>{
               setUploadNew(true)
-            }} disabled={isLoading} className='group h-50 w-40 border border-dashed bg-white flex flex-col items-center justify-center gap-4 rounded-lg cursor-pointer hover:shadow-lg transition'>
-            <FileUp className='w-20 h-10 group-hover:text-blue-700 group-hover:-translate-y-1 transition-all duration-400'/> 
-            <h2 className='group-hover:text-blue-700 group-hover:font-semibold transition-all duration-400'>Upload Resume</h2>
-            </button> 
+            }} disabled={isLoading} className='h-56 w-72 border-2 border-dashed border-indigo-300 bg-gradient-to-br from-indigo-50 to-white flex flex-col items-center justify-center gap-3 rounded-xl cursor-pointer hover:shadow-xl hover:border-indigo-500 transition-all duration-300 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed'>
+              {/* Animated background effect */}
+              <div className='absolute inset-0 bg-gradient-to-br from-indigo-100/0 to-indigo-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
+              
+              <div className='relative z-10 flex flex-col items-center gap-3'>
+                <div className='p-4 bg-indigo-100 rounded-full group-hover:bg-indigo-200 transition-all duration-300 group-hover:scale-110'>
+                  <FileUp className='w-10 h-10 text-indigo-600 group-hover:-translate-y-1 transition-all duration-400'/> 
+                </div>
+                <h2 className='text-lg font-semibold text-gray-800 group-hover:text-indigo-700 transition-all duration-300'>Upload Resume</h2>
+                <p className='text-xs text-center text-gray-500 px-5'>AI scans your resume & auto-fills everything<br/>So you can enhance your resume even more!!</p>
+              </div>
+            </button>
             
+            {/* Feature badge with sparkle icon */}
+            <div className='absolute -top-2 -right-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs px-3 py-1 rounded-full shadow-md font-medium flex items-center gap-1'>
+              <Sparkles className='w-3 h-3' />
+              AI Powered
+            </div>
           </div> 
       </div>
       
-      <div className=' max-w-[80%] gap-10 flex flex-wrap shrink-0'>
+      <div className={`max-w-[80%] gap-10 flex flex-wrap shrink-0 ${(createNew || uploadNew || deleteResume || editResume || isLoading) ? 'pointer-events-none opacity-50' : ''}`}>
         {
           allResumes.map(function (resume, idx){
             const cardColor = colors[idx % colors.length]
@@ -298,7 +348,7 @@ const Dashboard = () => {
       </div>
 
       {createNew && (
-        <div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center gap-4'>
+        <div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-50'>
             <CircleX onClick={()=>{
               setCreateNew(false);
             }}className='h-10 w-8 hover:text-red-500 hover:-rotate-25 hover:scale-105 transition-all duration-300'/>
@@ -319,7 +369,7 @@ const Dashboard = () => {
       )}
 
       {uploadNew && (
-        <div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center gap-4'>
+        <div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-50'>
             <CircleX onClick={()=>{
               setUploadNew(false);
             }}className='h-10 w-8 hover:text-red-500 hover:-rotate-25 hover:scale-105 transition-all duration-300'/>
@@ -376,7 +426,7 @@ const Dashboard = () => {
 
       {
         deleteResume && (
-                  <div className='fixed top-0 left-0 h-screen w-full bg-gray-200/40' onClick={(e)=>{
+                  <div className='fixed top-0 left-0 h-screen w-full bg-gray-200/40 z-50' onClick={(e)=>{
                     
                     if(e.target === e.currentTarget){
                       setDeleteResume(false)
@@ -413,7 +463,7 @@ const Dashboard = () => {
 
       {
         editResume && (
-          <div className='fixed top-0 left-0 bg-gray-300/20 backdrop-blur-xs flex justify-center items-center h-screen w-full' onClick={(e)=>{
+          <div className='fixed top-0 left-0 bg-gray-300/20 backdrop-blur-xs flex justify-center items-center h-screen w-full z-50' onClick={(e)=>{
             if(e.target === e.currentTarget){
               setEditResume(false)
               return;
@@ -445,7 +495,7 @@ const Dashboard = () => {
 
       {
         isLoading && (
-          <div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center gap-4'>
+          <div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-50'>
             <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
             <h2 className='text-2xl font-bold text-gray-800'>Processing...</h2>
           </div>

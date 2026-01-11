@@ -9,6 +9,7 @@ import Login from './pages/Login.jsx'
 import { useDispatch } from 'react-redux'
 import { login, setLoading } from "./app/features/authSlice.js";
 import api from "./configs/api.js";
+import NotFound from './components/NotFound.jsx';
 
 const App = () => {
 
@@ -63,6 +64,8 @@ const App = () => {
         <Route path="view/:resumeId" element={<Preview />} />
 
         <Route path="login" element={<Login />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )

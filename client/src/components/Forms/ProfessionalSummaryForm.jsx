@@ -2,9 +2,13 @@ import { Wand } from 'lucide-react'
 import React from 'react'
 import api from '../../configs/api'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateCredits } from '../../app/features/authSlice'
 
 function ProfessionalSummaryForm({data, onChange}) {
 
+    const dispatch = useDispatch();
+    const { token } = useSelector((state) => state.auth);
     const [summary, setSummary] = React.useState(data || "")
     const [loading, setLoading] = React.useState(false)
 
@@ -15,13 +19,33 @@ function ProfessionalSummaryForm({data, onChange}) {
         }
         try {
             setLoading(true);
-            const { data } = await api.post('/api/ai/enhance-summary', { content: summary });
+            const { data } = await api.post('/api/ai/enhance-summary', { content: summary }, {
+                headers: { Authorization: token }
+            });
             if (data?.enhancedSummary) {
                 setSummary(data.enhancedSummary);
                 onChange(data.enhancedSummary);
+                
+                // Fetch updated credits from server
+                try {
+                    const { data: userData } = await api.get('/api/users/data', {
+                        headers: { Authorization: token }
+                    });
+                    if (userData?.user?.aiCredits !== undefined) {
+                        dispatch(updateCredits(userData.user.aiCredits));
+                    }
+                } catch (e) {
+                    console.error('Failed to sync credits');
+                }
+                
+                toast.success("Summary enhanced successfully!");
             }
         } catch (error) {
-            toast.error(error?.response?.data?.message || 'AI enhance failed');
+            if (error.response?.status === 403) {
+                toast.error("All AI credits used!");
+            } else {
+                toast.error(error?.response?.data?.message || 'AI enhance failed');
+            }
         } finally {
             setLoading(false);
         }
