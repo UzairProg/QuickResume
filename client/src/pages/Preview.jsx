@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { dummyResumeData } from '../assets/assets';
 import ResumePreview from '../components/Preview/ResumePreview';
 import Loader from '../components/Loader/Loader';
 import api from '../configs/api';

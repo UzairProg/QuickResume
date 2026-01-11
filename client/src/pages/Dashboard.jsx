@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import { BadgePlus, FileUp, Trash, Pencil, FileUser, CircleX, Heading1    } from 'lucide-react'
-import { dummyResumeData } from '../assets/assets';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from '../configs/api';

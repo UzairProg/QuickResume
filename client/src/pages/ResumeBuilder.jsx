@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { dummyResumeData } from '../assets/assets';
 import { ArrowLeftFromLine, BriefcaseBusiness, ChevronLeft, ChevronRight, Eye, EyeClosed, FileDown, FileTextIcon, Folders, GraduationCap, LucideLayoutTemplate, Palette, Share2, Sparkles, User } from 'lucide-react';
 import PersonalInformationForm from '../components/Forms/PersonalInformationForm';
-import ResumePreview from '../components/Preview/ResumePreview';
-import TemplateSelector from '../components/Selector/templateSelector';
-import AccentSelector from '../components/Selector/accentSelector';
-import ProfessionalSummaryForm from '../components/Forms/ProfessionalSummaryForm';
-import ProfessionalExperienceForm from '../components/Forms/ProfessionalExperienceForm';
-import EducationForm from '../components/Forms/EducationForm';
-import ProjectForm from '../components/Forms/ProjectForm';
-import SkillsForm from '../components/Forms/SkillsForm';
+import ResumePreview from '../components/Preview/ResumePreview.jsx';
+import TemplateSelector from '../components/Selector/templateSelector.jsx';
+import AccentSelector from '../components/Selector/accentSelector.jsx';
+import ProfessionalSummaryForm from '../components/Forms/ProfessionalSummaryForm.jsx';
+import ProfessionalExperienceForm from '../components/Forms/ProfessionalExperienceForm.jsx';
+import EducationForm from '../components/Forms/EducationForm.jsx';
+import ProjectForm from '../components/Forms/ProjectForm.jsx';
+import SkillsForm from '../components/Forms/SkillsForm.jsx';
 import { toast, ToastContainer } from 'react-toastify';
 import api from '../configs/api';
 import { useSelector } from 'react-redux';
