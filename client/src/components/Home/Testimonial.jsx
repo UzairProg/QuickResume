@@ -1,5 +1,5 @@
 import React from 'react'
-import TitleDescription from './TitleDescription';
+import TitleDescription from './TitleDescription.jsx';
 import { BookCheck } from 'lucide-react';
 
 const Testimonial = () => {

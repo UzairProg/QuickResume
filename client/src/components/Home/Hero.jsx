@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import GetStartedButton from './GetStartedButton'
+import GetStartedButton from './GetStartedButton.jsx'
 import { useSelector } from 'react-redux'
 
 const hero = () => {
