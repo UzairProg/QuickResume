@@ -107,7 +107,7 @@ export const getUserProfile = async (req, res) => {
 export const getUserResume = async (req, res) => {
     try{
         const userId = req.user.id;
-        const resumes = await Resume.find({user: userId});
+        const resumes = await Resume.find({userId: userId});
         res.status(200).json({resumes});
     }
     catch(error){

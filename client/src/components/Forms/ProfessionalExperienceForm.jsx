@@ -1,7 +1,11 @@
 import { BriefcaseBusiness, PlusCircle, Trash2, Wand } from 'lucide-react'
 import React from 'react'
+import api from '../../configs/api'
+import { toast } from 'react-toastify'
 
 function ProfessionalExperienceForm({data = [], onChange}) {
+
+  const [loadingIdx, setLoadingIdx] = React.useState(null);
 
   function addExperience(){
     const newExperience = [...data, {
@@ -24,6 +28,26 @@ function ProfessionalExperienceForm({data = [], onChange}) {
     const newExperience = [...data];
     newExperience[index][field] = value;
     onChange(newExperience);
+  }
+
+  const handleEnhance = async (idx) => {
+    const exp = data[idx];
+    const content = exp?.description || '';
+    if (!content.trim()) {
+      toast.info('Add a description first');
+      return;
+    }
+    try {
+      setLoadingIdx(idx);
+      const { data: resp } = await api.post('/api/ai/enhance-job-description', { content });
+      if (resp?.enhancedDescription) {
+        updateExperience(idx, 'description', resp.enhancedDescription);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'AI enhance failed');
+    } finally {
+      setLoadingIdx(null);
+    }
   }
 
   return (
@@ -98,9 +122,9 @@ function ProfessionalExperienceForm({data = [], onChange}) {
                         <div className='px-2 flex flex-col mt-2 gap-2'>
                           <div className='flex justify-between items-center'>
                             <h3>Job Description</h3>
-                            <button className='group bg-gray-200 flex items-center gap-2 h-min py-1 px-2 rounded-md border border-transparent hover:bg-purple-200 hover:border-purple-400 transition-all'>
-                                <Wand className='size-4 text-purple-600 font-extrabold wiggle duration-300 transition-all'/>
-                                <p className='text-xs text-purple-600 font-semibold  group-hover:font-bold'>Ai Enhance</p>
+                            <button onClick={()=>handleEnhance(idx)} disabled={loadingIdx === idx} className='group bg-gray-200 flex items-center gap-2 h-min py-1 px-2 rounded-md border border-transparent hover:bg-purple-200 hover:border-purple-400 transition-all disabled:opacity-60 disabled:cursor-not-allowed'>
+                              <Wand className='size-4 text-purple-600 font-extrabold wiggle duration-300 transition-all'/>
+                              <p className='text-xs text-purple-600 font-semibold  group-hover:font-bold'>{loadingIdx === idx ? 'Enhancing...' : 'Ai Enhance'}</p>
                             </button>
                           </div>
                           

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { dummyResumeData } from '../assets/assets';
 import ResumePreview from '../components/Preview/ResumePreview';
 import Loader from '../components/Loader/Loader';
+import api from '../configs/api';
 
 const Preview = () => {
   const {resumeId} = useParams();
@@ -10,10 +11,45 @@ const Preview = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [resumeData, setResumeData] = React.useState(null);
 
+  const mapFromServer = (server) => {
+    const mapped = { ...server };
+    mapped.accent_color = server.accentColor ?? server.accent_color;
+    delete mapped.accentColor;
+    if (Array.isArray(server.expierence)) {
+      mapped.experience = server.expierence.map((e) => ({
+        ...e,
+        end_date: e.end_data ?? e.end_date,
+      }));
+      delete mapped.expierence;
+    }
+    return mapped;
+  };
+
   const loadResume = async () => {
     setIsLoading(true);
-    setResumeData(dummyResumeData.find(resume => resume._id === resumeId));
-    setIsLoading(false);
+
+    // Try local dummy first (dev fallback)
+    const local = dummyResumeData.find(resume => resume._id === resumeId);
+    if (local) {
+      setResumeData(local);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { data } = await api.get(`/api/resumes/public/${resumeId}`);
+      if (data?.resume) {
+        const mapped = mapFromServer(data.resume);
+        setResumeData(mapped);
+      } else {
+        setResumeData(null);
+      }
+    } catch (error) {
+      console.error('Error loading resume preview:', error?.response?.data || error.message);
+      setResumeData(null);
+    } finally {
+      setIsLoading(false);
+    }
   }
   React.useEffect(() => {
     loadResume();
@@ -24,7 +60,7 @@ const Preview = () => {
 
   return resumeData ? (
     <div>
-      <ResumePreview data={resumeData} template={"minimal-image"} accentColor={resumeData.accentColor} classes='py-4 bg-white'/>
+      <ResumePreview data={resumeData} template={resumeData.template || "classic"} accentColor={resumeData.accent_color || resumeData.accentColor} classes='py-4 bg-white'/>
     </div>
   ) : (
     <div>

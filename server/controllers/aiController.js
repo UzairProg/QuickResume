@@ -107,7 +107,7 @@ export const extractTextFromResume = async (req, res) => {
         const response = await ai.chat.completions.create({
             model: process.env.MODEL_NAME,
             messages: [
-                { role: "system", content: "You are a professional resume parser. your task is to extract key information from the resume text provided. Extract the following sections: Personal Info, Professional Summary, Work Experience, Education, Skills, Certifications, Projects. Format the extracted information in JSON format with the section names as keys." },
+                { role: "system", content: SYSTEM_PROMPT },
                 {
                     role: "user",
                     content: `Extract the following resume text into JSON format:\n\n${resumeText}`,

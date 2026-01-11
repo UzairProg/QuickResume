@@ -1,9 +1,31 @@
 import { Wand } from 'lucide-react'
 import React from 'react'
+import api from '../../configs/api'
+import { toast } from 'react-toastify'
 
 function ProfessionalSummaryForm({data, onChange}) {
 
     const [summary, setSummary] = React.useState(data || "")
+    const [loading, setLoading] = React.useState(false)
+
+    const handleEnhance = async () => {
+        if (!summary.trim()) {
+            toast.info("Add some summary text first");
+            return;
+        }
+        try {
+            setLoading(true);
+            const { data } = await api.post('/api/ai/enhance-summary', { content: summary });
+            if (data?.enhancedSummary) {
+                setSummary(data.enhancedSummary);
+                onChange(data.enhancedSummary);
+            }
+        } catch (error) {
+            toast.error(error?.response?.data?.message || 'AI enhance failed');
+        } finally {
+            setLoading(false);
+        }
+    }
 
   return (
     <div>
@@ -13,9 +35,9 @@ function ProfessionalSummaryForm({data, onChange}) {
                 <p className='text-gray-600 text-md'>Add summary for your resume here</p>
             </div>
 
-            <button className='group bg-gray-200 flex items-center gap-2 h-min py-1 px-2 rounded-md border border-transparent hover:bg-purple-200 hover:border-purple-400 transition-all'>
+            <button onClick={handleEnhance} disabled={loading} className='group bg-gray-200 flex items-center gap-2 h-min py-1 px-2 rounded-md border border-transparent hover:bg-purple-200 hover:border-purple-400 transition-all disabled:opacity-60 disabled:cursor-not-allowed'>
                 <Wand className='size-5 text-purple-600 font-extrabold wiggle duration-300 transition-all'/>
-                <p className='text-sm text-purple-600'>Ai Enhance</p>
+                <p className='text-sm text-purple-600'>{loading ? 'Enhancing...' : 'Ai Enhance'}</p>
             </button>
         </div>
 

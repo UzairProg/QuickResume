@@ -6,13 +6,14 @@ import fs from "fs";
 export const createResume = async (req, res) => {
     try {
         const userId = req.user.id
+        console.log(userId)
         const { title } = req.body;
 
-        const newResume = Resume.create({
+        const newResume = await Resume.create({
             userId,
             title: title || "Untitled Resume"
         })
-
+        console.log(newResume, "neweadsalfhkjasb")
         res.status(201).json({
             message: "Resume created successfully",
             resume: newResume
@@ -48,7 +49,7 @@ export const getResumeById = async (req, res) => {
     try{
         const userId = req.user.id;
         const { resumeId } = req.params;
-
+        console.log(resumeId, "id miliii??")
         const resume = await Resume.findOne({ _id: resumeId, userId });
 
         if(!resume){
@@ -69,22 +70,43 @@ export const updateResume = async (req, res) => {
         const userId = req.user.id;
         const { resumeId, resumeData, removeBackground } = req.body;
         const image = req.file;
+        console.log(resumeData)
+        let resumeDataCopy;
 
-        let resumeDataCopy = JSON.parse(resumeData)
+        if (typeof resumeData === "string") {
+        resumeDataCopy = await JSON.parse(resumeData);
+        } else {
+        resumeDataCopy = structuredClone(resumeData);
+        }
 
         if(image){
             const imageBufferData = fs.createReadStream(image.path);
 
-            const response = await imageKit.files.upload({
-            file: imageBufferData,
-            fileName: 'resume.png',
-            folder: 'user-resumes',
-            transformation: {
-                pre: "w-300,h-300,fo-face,z-0.75" + (removeBackground ? ",e-background_removal" : "")
-            }
-        });
+            const removeBg = removeBackground === true || removeBackground === 'true' || removeBackground === 'yes' || removeBackground === '1';
 
-        resumeDataCopy.personal_info.image = response.url;
+            const uploadOptions = {
+                file: imageBufferData,
+                fileName: 'resume.png',
+                folder: 'user-resumes'
+            };
+
+            // Apply background removal via ImageKit extension when requested
+            if (removeBg) {
+                uploadOptions.extensions = [
+                    { name: 'remove-bg' }
+                ];
+            }
+
+            // Optional mild pre-transformation to keep image small
+            uploadOptions.transformation = { pre: 'w-300,h-300,fo-face,z-0.75' };
+
+            const response = await imageKit.upload(uploadOptions);
+
+            // Cleanup local temp file from multer
+            try { fs.unlinkSync(image.path); } catch (e) { /* ignore */ }
+
+            resumeDataCopy.personal_info.image = response.url;
+            resumeDataCopy.personal_info.imageBackgroundRemoved = removeBg;
         }
 
         const resume = await Resume.findOneAndUpdate(

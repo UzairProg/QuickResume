@@ -31,6 +31,7 @@ const ResumeSchema = new mongoose.Schema({
     }],
     personal_info: {
         image: { type: String, default: "" },
+        imageBackgroundRemoved: { type: Boolean, default: false },
         full_name: { type: String, default: "" },
         profession: { type: String, default: "" },
         email: { type: String, default: "" },
@@ -45,7 +46,7 @@ const ResumeSchema = new mongoose.Schema({
         start_date: { type: String, default: "" },
         end_data: { type: String, default: ""},
         description: { type: String, default: ""},
-        is_current: { type: Boolean, default: ""},
+        is_current: { type: Boolean, default: false},
     }],
     project: [{
         name: { type: String, default: "" },

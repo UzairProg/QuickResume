@@ -39,13 +39,16 @@ function PersonalInformationForm({data, onChange, removeBackground, setRemoveBac
             <input type="file" accept='image/jpeg, image/png' className='hidden' onChange={(e)=>{handleChange("image", e.target.files[0])}}/>
             </label>
             {
-                typeof data.image === 'object' && (
+                data?.image && (
                     <div className='flex items-start flex-col gap-1'>
                         <p className='text-sm font-medium text-gray-700'>Remove Background</p>
                         <label className='relative inline-flex items-center cursor-pointer'>
                             <input type="checkbox" checked={removeBackground} onChange={(e)=>{setRemoveBackground(e.target.checked)}} className='sr-only peer'/>
                             <div className="w-9 h-5 bg-gray-300 peer-focus:outline-none peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
+                        {typeof data.image === 'string' && removeBackground && (
+                            <p className='text-xs text-gray-500 mt-1'>Re-upload image to apply</p>
+                        )}
                     </div>
                 )
             }

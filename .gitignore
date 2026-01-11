@@ -33,6 +33,7 @@ server/.env
 server/.env.local
 out/
 .next/
+server/uploads/
 
 # Testing
 coverage/

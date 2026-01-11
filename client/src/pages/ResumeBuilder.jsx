@@ -12,14 +12,20 @@ import EducationForm from '../components/Forms/EducationForm';
 import ProjectForm from '../components/Forms/ProjectForm';
 import SkillsForm from '../components/Forms/SkillsForm';
 import { toast, ToastContainer } from 'react-toastify';
+import api from '../configs/api';
+import { useSelector } from 'react-redux';
+// import { set } from 'mongoose';
 
 const ResumeBuilder = () => {
 
   const navigate = useNavigate();
 
+  const { user, token } = useSelector((state) => state.auth);
+
   const { resumeId } = useParams();
   const [activeSectionIndex, setActiveSectionIndex] = React.useState(0);
   const [removeBackground, setRemoveBackground] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [resumeData, setResumeData] = React.useState({
     _id: "",
@@ -47,12 +53,155 @@ const ResumeBuilder = () => {
   const activeSection = sections[activeSectionIndex];
 
   const loadExistingResume = async () => {
-    const resume = dummyResumeData.find((res) => res._id === resumeId);
-    if(resume){
-      setResumeData(resume); 
-      document.title = `${resume.title} - QuickResume`;
+    // const {data} = await api.post(`api/resumes/get/${resumeId}`, {
+    //     headers: { Authorization: token },
+    //   });
+      const {data} = await api.get(`api/resumes/get/${resumeId}`, {
+        headers: { Authorization: token },
+      });
+    if(data){
+      const mapped = mapFromServer(data.resume);
+      setResumeData(mapped);
+      // Set removeBackground state from persisted data
+      setRemoveBackground(mapped.personal_info?.imageBackgroundRemoved || false);
+      document.title = `${data.resume.title} - QuickResume`;
     }
   }
+
+  const mapToServer = (client) => {
+    const mapped = { ...client };
+    // map accent color
+    mapped.accentColor = client.accent_color;
+    delete mapped.accent_color;
+    // map experience -> expierence and fix end_date key
+    if (Array.isArray(client.experience)) {
+      mapped.expierence = client.experience.map((e) => ({
+        ...e,
+        end_data: e.end_date,
+      }));
+      delete mapped.experience;
+    }
+    // ensure template/public/title stay
+    return mapped;
+  };
+
+  const mapFromServer = (server) => {
+    const mapped = { ...server };
+    mapped.accent_color = server.accentColor ?? server.accent_color;
+    delete mapped.accentColor;
+    if (Array.isArray(server.expierence)) {
+      mapped.experience = server.expierence.map((e) => ({
+        ...e,
+        end_date: e.end_data ?? e.end_date,
+      }));
+      delete mapped.expierence;
+    }
+    return mapped;
+  };
+
+  const buildServerPayload = (rawData) => {
+    const base = {
+      ...rawData,
+      personal_info: { ...rawData.personal_info },
+    };
+
+    // Remove File object before JSON cloning
+    if (typeof base.personal_info?.image === "object") {
+      delete base.personal_info.image;
+    }
+
+    // Store the removeBackground state
+    base.personal_info.imageBackgroundRemoved = removeBackground;
+
+    // JSON clone to avoid cloning unsupported objects like events
+    const jsonSafe = JSON.parse(JSON.stringify(base));
+
+    return mapToServer(jsonSafe);
+  };
+
+  const coerceData = (arg) => {
+    // Ignore click events
+    if (arg && arg.target) return undefined;
+    return arg;
+  };
+
+  const handleSave = async (nextData) => {
+    setIsLoading(true);
+    // try{
+    //   const formData = new FormData();
+    //   formData.append("resumeId", resumeData._id);
+    //   formData.append("resumeData", JSON.stringify(resumeData));
+    //   formData.append("removeBackground", removeBackground);
+    //   // formData.append("resumeData", JSON.stringify({public: !resumeData.public}));
+    //   const { data } = await api.put('/api/resumes/update', formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //       Authorization: token,
+    //     },
+    //   });
+    //   toast.dismiss();
+    //   toast.success(data.message, {
+    //     position: "top-center",
+    //     autoClose: 2000,
+    //     hideProgressBar: false,
+    //     closeOnClick: false,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //     theme: "light",
+    // });
+    // setIsLoading(false);
+    // }
+    // catch(error){
+    //   console.error("Error in saving resume:", error);
+    //   toast.dismiss();
+    //   toast.error(error?.response?.data?.message || "Error in saving resume", {
+    //     position: "top-center",
+    //     autoClose: 2000,
+    //     hideProgressBar: false,
+    //     closeOnClick: false,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //     theme: "light",
+    // });
+    // setIsLoading(false);
+    // }
+
+    try {
+      const source = coerceData(nextData) ?? resumeData;
+      const serverPayload = buildServerPayload(source);
+
+      const formData = new FormData();
+      formData.append("resumeId", resumeId);
+      formData.append("resumeData", JSON.stringify(serverPayload));
+      if (removeBackground) formData.append("removeBackground", "yes");
+      if (source?.personal_info && typeof source.personal_info.image === "object") {
+        formData.append("image", source.personal_info.image);
+      }
+
+      const { data } = await api.put("/api/resumes/update", formData, {
+        headers: { Authorization: token },
+      });
+
+      const mapped = mapFromServer(data.resume);
+      setResumeData(mapped);
+      toast.success(data.message);
+    } catch (error) {
+      console.error("Error saving resume:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleTogglePublic = async () => {
+    const nextPublic = !resumeData.public;
+    const updated = { ...resumeData, public: nextPublic };
+    setResumeData(updated);
+    await handleSave(updated);
+    toast.dismiss();
+    toast.success(`Resume is now ${nextPublic ? "Public" : "Private"}`);
+  };
 
   useEffect(() => {
     loadExistingResume();
@@ -193,8 +342,8 @@ const ResumeBuilder = () => {
                   
                 }
 
-                <button type="submit" className='border border-gray-300 hover:bg-blue-700/85 mt-8 active:scale-98 ml-2 px-4 py-2 text-white rounded-md bg-blue-600/90'>
-                  Save Changes
+                <button onClick={() => handleSave()} type="button" disabled={isLoading} className='border border-gray-300 hover:bg-blue-700/85 mt-8 active:scale-98 ml-2 px-4 py-2 text-white rounded-md bg-blue-600/90 disabled:opacity-60 disabled:cursor-not-allowed'>
+                  {isLoading ? "Saving..." : "Save Changes"}
                 </button>
             </div>
             
@@ -209,20 +358,7 @@ const ResumeBuilder = () => {
               <span className='text-sm '>Download</span>
             </button>
 
-            <button onClick={()=>{
-              setResumeData(prev => ({...prev, public: !prev.public}))
-              toast.dismiss()
-              toast.success(`Resume is now ${!resumeData.public ? "Public" : "Private"}`, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            })
-            }}className='px-3 group h-min py-1 flex items-center justify-center bg-blue-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-blue-500'>
+            <button onClick={handleTogglePublic} className='px-3 group h-min py-1 flex items-center justify-center bg-blue-200 rounded-sm gap-1.5 ring-1 hover:ring-2 transition-all ring-blue-500'>
               <EyeClosed className={`w-5 h-6 wiggle group-hover:text-blue-800 ${resumeData.public ? "hidden" : ""}`}/>
               <Eye className={`w-5 h-6 wiggle group-hover:text-blue-800 ${resumeData.public ? "" : "hidden"}`}/>
               <span className={`text-sm ${resumeData.public ? "" : "hidden"}`}>Public</span>

@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import api from '../configs/api';
 import { useSelector } from 'react-redux';
+import pdfToText from 'react-pdftotext'
 
 const Dashboard = () => { 
   const navigate = useNavigate();
@@ -32,21 +33,52 @@ const Dashboard = () => {
   const [editTitle, setEditTitle] = React.useState("")
 
   const [selectedResume, setSelectedResume] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { user, token } = useSelector((state) => state.auth);
 
-  function fetchResumes() {
-    setAllResumes(dummyResumeData)
+  async function fetchResumes() {
+    setIsLoading(true);
+    try {
+      const {data} = await api.get("/api/users/resumes", {
+        headers: { Authorization: token },
+      });
+      // console.log(data, "dataaaa fetchhh huaa kyaa")
+      setAllResumes(data.resumes);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message, {
+        position: "top-center",
+        autoClose: 5000,
+      });
+    }
+    setIsLoading(false);
   }
 
-  function handleDeleteResume(idx) {
-    // console.log(e)
-    let cpyResume = [...allResumes]
-    cpyResume.splice(idx, 1);
-    setAllResumes(cpyResume)
+  async function handleDeleteResume(idx) {
+    // console.log(selectedResume)
+    try {
+      let resumeId = allResumes[idx]._id;
+      // console.log(resumeId)
+      const {data} = await api.delete(`/api/resumes/delete/${resumeId}`, {
+        headers: { Authorization: token },
+      });
+      // console.log(data)
+      setAllResumes(allResumes.filter((_, index) => index !== idx));
+      setDeleteResume(false)
+      setSelectedResume(null)
+      toast.success(`${data?.message}`, {
+          position: "top-center",
+          autoClose: 3000,
+      })
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message, {
+        position: "top-center",
+        autoClose: 5000,
+      });
+    }
   }
 
-  function handleSubmit(e){
+  async function handleSubmit (e){
     
     try {
       e.preventDefault();
@@ -65,15 +97,16 @@ const Dashboard = () => {
       return;
     } 
 
-      const newResume = api.post("/api/resumes/create", {
+      const {data} = await api.post("/api/resumes/create", {
         title: resumeTitle,
       }, {
         headers: { Authorization: token },
       });
-      setAllResumes(...allResumes, newResume);
+      setAllResumes([...allResumes, data.resume]);
       setCreateNew(false);
       setResumeTitle("");
-      navigate(`builder/${newResume._id}`);
+      // console.log(data)
+      navigate(`builder/${data.resume._id}`);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message, {
         position: "top-center",
@@ -82,62 +115,106 @@ const Dashboard = () => {
     }
   }
 
-  function handleUpload(e){
-    e.preventDefault();
-    if(!resumeTitle){
-      toast.dismiss();
-      toast.warn("Please enter a title for the resume", {
+  async function handleUpload(e){
+    setIsLoading(true);
+    try {
+      e.preventDefault();
+      if(!resumeTitle){
+        toast.dismiss();
+        toast.warn("Please enter a title for the resume", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      } 
+  
+      if(!resumeFile){
+        toast.dismiss();
+        toast.warn("Please Upload an existing resume", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      } 
+      const resumeText = await pdfToText(resumeFile);
+      const {data} = await api.post("/api/ai/upload-resume", {
+        title: resumeTitle,
+        resumeText: resumeText,
+      }, {
+        headers: { Authorization: token },
+      });
+      // console.log(data, "datatatatatatattatas")
+      setEditTitle("");
+      setResumeFile(null);
+      setAllResumes([...allResumes, data.resume]);
+      setUploadNew(false);
+      setResumeTitle("");
+      // console.log(data)
+      navigate(`builder/${data.resume._id}`);
+      return;
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message, {
         position: "top-center",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
       });
-      return;
-    } 
-
-    if(!resumeFile){
-      toast.dismiss();
-      toast.warn("Please Upload an existing resume", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return;
-    } 
-    navigate(`builder/:res123`);
-    return;
+    }
+    setIsLoading(false);
   }
 
-  function handleEditTitle(e){
-    e.preventDefault();
-    if(!editTitle){
-      toast.dismiss();
-      toast.warn("Please enter a title for the resume", {
+  async function handleEditTitle(e){
+    setIsLoading(true);
+    try {
+      e.preventDefault();
+      if(!editTitle){
+        toast.dismiss();
+        toast.warn("Please enter a title for the resume", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      const resumeId = allResumes[selectedResume]._id;
+      const {data} =  await api.put("/api/resumes/update", {
+        resumeId,
+        resumeData: {
+          title: editTitle
+        }
+      }, {
+        headers: { Authorization: token },
+      });
+      fetchResumes();
+      setEditResume(false);
+      // console.log(data, "change zla ka??")
+      setEditTitle("");
+      toast.success(`${data?.message}`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message, {
         position: "top-center",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
       });
-      return;
     }
-    let cpyResume = [...allResumes]
-    cpyResume[selectedResume].title = editTitle;
-    setAllResumes(cpyResume);
-    setEditResume(false);
-    setEditTitle("");
+    setIsLoading(false);
   }
 
 
@@ -161,12 +238,12 @@ const Dashboard = () => {
           </div> 
 
           <div>
-            <div onClick={()=>{
+            <button onClick={()=>{
               setUploadNew(true)
-            }} className='group h-50 w-40 border border-dashed bg-white flex flex-col items-center justify-center gap-4 rounded-lg cursor-pointer hover:shadow-lg transition'>
+            }} disabled={isLoading} className='group h-50 w-40 border border-dashed bg-white flex flex-col items-center justify-center gap-4 rounded-lg cursor-pointer hover:shadow-lg transition'>
             <FileUp className='w-20 h-10 group-hover:text-blue-700 group-hover:-translate-y-1 transition-all duration-400'/> 
             <h2 className='group-hover:text-blue-700 group-hover:font-semibold transition-all duration-400'>Upload Resume</h2>
-            </div> 
+            </button> 
             
           </div> 
       </div>
@@ -231,7 +308,7 @@ const Dashboard = () => {
           <form className="flex items-center justify-center gap-3 max-w-md w-full">
             <div onChange={(e)=>{
               setResumeTitle(e.target.value);
-              console.log(resumeTitle)
+              // console.log(resumeTitle)
             }}className="flex items-center w-3/4 border gap-2 bg-white text-white/90 border-gray-500/30 h-12 rounded-full overflow-hidden">
                 <input value={resumeTitle} type="title" placeholder="Enter Resume Title" className="w-full h-full pl-6 outline-none text-sm placeholder-gray-500 bg-transparent text-black" required />
             </div>
@@ -286,7 +363,7 @@ const Dashboard = () => {
 
             <div onChange={(e)=>{
               setResumeTitle(e.target.value);
-              console.log(resumeTitle)
+              // console.log(resumeTitle)
             }}className="flex items-center w-3/4 border gap-2 bg-white text-white/90 border-gray-500/30 h-12 rounded-full overflow-hidden">
               
                 <input value={resumeTitle} type="title" placeholder="Enter Resume Title" className="w-full h-full pl-6 outline-none text-sm placeholder-gray-500 bg-transparent text-black" required />
@@ -324,12 +401,6 @@ const Dashboard = () => {
                 </button>
                 <button onClick={()=>{
                   handleDeleteResume(selectedResume)
-                  setDeleteResume(false)
-                  setSelectedResume(null)
-                  toast.success("Resume deleted successfully", {
-                    position: "top-center",
-                    autoClose: 3000,
-                  })
                 }} type="button" className="w-full md:w-36 h-10 rounded-md text-white bg-red-600 font-medium text-sm hover:bg-red-700 active:scale-95 transition">
                     Confirm
                 </button>
@@ -367,6 +438,15 @@ const Dashboard = () => {
           </form>
         </div>
 
+          </div>
+        )
+      }
+
+      {
+        isLoading && (
+          <div className='fixed inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center gap-4'>
+            <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+            <h2 className='text-2xl font-bold text-gray-800'>Processing...</h2>
           </div>
         )
       }
