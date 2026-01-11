@@ -36,7 +36,7 @@ const Login = () => {
       dispatch(login(data));
 
       localStorage.setItem("token", data.token);
-        console.log("sssobject")
+        // console.log("sssobject")
         toast.success(data.message, {autoClose: 1500});
     //   toast.success("Logged in successfully");
     } catch (error) {
