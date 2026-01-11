@@ -28,13 +28,13 @@ export const registerUser = async (req, res) => {
 
         const hashedPassword = await bcrytp.hash(password, 10); 
 
-        const newUser = User.create({
+        const newUser = await User.create({
             name: name.trim(),
             email: email.trim(),
             password: hashedPassword
         })
 
-        let token = generateToken(newUser._id);
+        const token = generateToken(newUser._id);
 
         res.status(201).json({
             message: "User registered successfully",

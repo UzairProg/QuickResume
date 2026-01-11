@@ -20,7 +20,7 @@ export const createResume = async (req, res) => {
         });
     }
     catch(error){
-        // console.error("Error in getUserResume:", error);
+        console.error("Error in createResume:", error?.message || error, error?.stack);
         res.status(500).json({message: "Server Error"});
     }
 }
