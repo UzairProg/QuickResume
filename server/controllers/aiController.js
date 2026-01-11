@@ -62,47 +62,44 @@ export const extractTextFromResume = async (req, res) => {
             return res.status(400).json({ message: "Resume text is required" });
         }
 
-        const SYSTEM_PROMPT = `You are a professional resume parser. your task is to extract the exact following data is JSON format.
-        {
-            professional_summary: {
-            type: String,
-            default: ""
-            },
-            skills: [{
-                type: String
-            }],
-            personal_info: {
-                image: { type: String, default: "" },
-                full_name: { type: String, default: "" },
-                profession: { type: String, default: "" },
-                email: { type: String, default: "" },
-                phone: { type: String, default: "" },
-                location: { type: String, default: "" },
-                linkedin: { type: String, default: "" },
-                website: { type: String, default: "" }
-            },
-            expierence: [{
-                company: { type: String, default: "" },
-                position: { type: String, default: "" },
-                start_date: { type: String, default: "" },
-                end_data: { type: String, default: ""},
-                description: { type: String, default: ""},
-                is_current: { type: Boolean, default: ""},
-            }],
-            project: [{
-                name: { type: String, default: "" },
-                type: { type: String, default: "" },
-                description: { type: String, default: "" }
-            }],
-            education: [{
-                institution: { type: String, default: "" },
-                degree: { type: String, default: "" },
-                field: { type: String, default: "" },
-                graduation_date: { type: String, default: "" },
-                gpa: { type: String, default: "" }
-            }]
-        }
-        `;
+        // Strict JSON-only schema instruction matching the server model fields
+        const SYSTEM_PROMPT = `You are a professional resume parser. Return a STRICT JSON object ONLY.
+Do not include comments, explanations, markdown, or trailing commas.
+Keys and types must match exactly this schema (use empty strings or false when unknown):
+{
+  "professional_summary": "",
+  "skills": [""],
+  "personal_info": {
+    "image": "",
+    "full_name": "",
+    "profession": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "linkedin": "",
+    "website": ""
+  },
+  "expierence": [{
+    "company": "",
+    "position": "",
+    "start_date": "",
+    "end_data": "",
+    "description": "",
+    "is_current": false
+  }],
+  "project": [{
+    "name": "",
+    "type": "",
+    "description": ""
+  }],
+  "education": [{
+    "institution": "",
+    "degree": "",
+    "field": "",
+    "graduation_date": "",
+    "gpa": ""
+  }]
+}`;
 
         const response = await ai.chat.completions.create({
             model: process.env.MODEL_NAME,
@@ -112,18 +109,86 @@ export const extractTextFromResume = async (req, res) => {
                     role: "user",
                     content: `Extract the following resume text into JSON format:\n\n${resumeText}`,
                 },
-            ],response_format: {
-                type: "json_object",
-            },
+            ],
+            response_format: { type: "json_object" },
         });
-        const extractedData = response.choices[0].message.content;
-        const parsedData = JSON.parse(extractedData);
+
+        const raw = response?.choices?.[0]?.message?.content ?? "";
+
+        // Safe JSON parse with fallback to extracting the first JSON object block
+        const safeParse = (text) => {
+            try {
+                return JSON.parse(text);
+            } catch (_) {
+                const start = text.indexOf("{");
+                const end = text.lastIndexOf("}");
+                if (start !== -1 && end !== -1 && end > start) {
+                    const candidate = text.slice(start, end + 1);
+                    try {
+                        return JSON.parse(candidate);
+                    } catch (_) {
+                        return null;
+                    }
+                }
+                return null;
+            }
+        };
+
+        const parsedData = safeParse(raw);
+        if (!parsedData || typeof parsedData !== "object") {
+            return res.status(502).json({ message: "AI returned invalid JSON. Please try again." });
+        }
+
+        // Normalize types and ensure required keys exist
+        const normalize = (d) => {
+            const str = (v) => (typeof v === "string" ? v : "");
+            const bool = (v) => (typeof v === "boolean" ? v : false);
+            const arr = (v) => (Array.isArray(v) ? v : []);
+
+            return {
+                professional_summary: str(d.professional_summary),
+                skills: arr(d.skills).map((s) => str(s)).filter((s) => s !== ""),
+                personal_info: {
+                    image: str(d?.personal_info?.image),
+                    full_name: str(d?.personal_info?.full_name),
+                    profession: str(d?.personal_info?.profession),
+                    email: str(d?.personal_info?.email),
+                    phone: str(d?.personal_info?.phone),
+                    location: str(d?.personal_info?.location),
+                    linkedin: str(d?.personal_info?.linkedin),
+                    website: str(d?.personal_info?.website),
+                },
+                expierence: arr(d.expierence).map((e) => ({
+                    company: str(e?.company),
+                    position: str(e?.position),
+                    start_date: str(e?.start_date),
+                    end_data: str(e?.end_data),
+                    description: str(e?.description),
+                    is_current: bool(e?.is_current),
+                })),
+                project: arr(d.project).map((p) => ({
+                    name: str(p?.name),
+                    type: str(p?.type),
+                    description: str(p?.description),
+                })),
+                education: arr(d.education).map((ed) => ({
+                    institution: str(ed?.institution),
+                    degree: str(ed?.degree),
+                    field: str(ed?.field),
+                    graduation_date: str(ed?.graduation_date),
+                    gpa: str(ed?.gpa),
+                })),
+            };
+        };
+
+        const normalized = normalize(parsedData);
 
         const newResume = await Resume.create({
             userId: req.user.id,
             title: title || "Untitled Resume",
-            ...parsedData
+            ...normalized,
         });
+
         res.status(200).json({ message: "Resume uploaded and text extracted successfully", resume: newResume });
     } catch (error) {
         console.error("Error in extractTextFromResume:", error);

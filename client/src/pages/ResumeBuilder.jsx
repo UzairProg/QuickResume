@@ -127,46 +127,6 @@ const ResumeBuilder = () => {
 
   const handleSave = async (nextData) => {
     setIsLoading(true);
-    // try{
-    //   const formData = new FormData();
-    //   formData.append("resumeId", resumeData._id);
-    //   formData.append("resumeData", JSON.stringify(resumeData));
-    //   formData.append("removeBackground", removeBackground);
-    //   // formData.append("resumeData", JSON.stringify({public: !resumeData.public}));
-    //   const { data } = await api.put('/api/resumes/update', formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //       Authorization: token,
-    //     },
-    //   });
-    //   toast.dismiss();
-    //   toast.success(data.message, {
-    //     position: "top-center",
-    //     autoClose: 2000,
-    //     hideProgressBar: false,
-    //     closeOnClick: false,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "light",
-    // });
-    // setIsLoading(false);
-    // }
-    // catch(error){
-    //   console.error("Error in saving resume:", error);
-    //   toast.dismiss();
-    //   toast.error(error?.response?.data?.message || "Error in saving resume", {
-    //     position: "top-center",
-    //     autoClose: 2000,
-    //     hideProgressBar: false,
-    //     closeOnClick: false,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "light",
-    // });
-    // setIsLoading(false);
-    // }
 
     try {
       const source = coerceData(nextData) ?? resumeData;
@@ -188,7 +148,7 @@ const ResumeBuilder = () => {
       setResumeData(mapped);
       toast.success(data.message);
     } catch (error) {
-      console.error("Error saving resume:", error);
+      // console.error("Error saving resume:", error);
     } finally {
       setIsLoading(false);
     }
@@ -263,7 +223,7 @@ const ResumeBuilder = () => {
                     <div onClick={()=>{
                       if(activeSectionIndex-1 >= 0){
                         setActiveSectionIndex(prev => prev-1)
-                        console.log(activeSectionIndex)
+                        // console.log(activeSectionIndex)
                       }
                     }}className='flex items-center hover:cursor-pointer hover:text-gray-700'>
                       <ChevronLeft className='w-5 h-4 '/>
@@ -275,7 +235,7 @@ const ResumeBuilder = () => {
                 <div onClick={()=>{
                   if(activeSectionIndex+1 < sections.length){
                         setActiveSectionIndex(prev => prev+1)
-                        console.log(activeSectionIndex)
+                        // console.log(activeSectionIndex)
                       }
                 }} className='flex items-center text-gray-500 hover:cursor-pointer hover:text-gray-700' style={{color: activeSectionIndex === sections.length-1 ? "#d1d5dc" : "", cursor: activeSectionIndex === sections.length-1 ? "auto" : "pointer"}}>
                   <p>Next</p>

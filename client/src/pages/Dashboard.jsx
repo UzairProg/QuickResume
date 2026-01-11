@@ -131,6 +131,7 @@ const Dashboard = () => {
           progress: undefined,
           theme: "light",
         });
+        setIsLoading(false);
         return;
       } 
   
@@ -146,6 +147,7 @@ const Dashboard = () => {
           progress: undefined,
           theme: "light",
         });
+        setIsLoading(false);
         return;
       } 
       const resumeText = await pdfToText(resumeFile);

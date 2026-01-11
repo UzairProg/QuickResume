@@ -6,21 +6,21 @@ import fs from "fs";
 export const createResume = async (req, res) => {
     try {
         const userId = req.user.id
-        console.log(userId)
+        // console.log(userId)
         const { title } = req.body;
 
         const newResume = await Resume.create({
             userId,
             title: title || "Untitled Resume"
         })
-        console.log(newResume, "neweadsalfhkjasb")
+        // console.log(newResume, "neweadsalfhkjasb")
         res.status(201).json({
             message: "Resume created successfully",
             resume: newResume
         });
     }
     catch(error){
-        console.error("Error in getUserResume:", error);
+        // console.error("Error in getUserResume:", error);
         res.status(500).json({message: "Server Error"});
     }
 }
@@ -39,7 +39,7 @@ export const deleteResume = async (req, res) => {
         res.status(200).json({ message: "Resume deleted successfully" });
     }
         catch(error){
-        console.error("Error in getUserResume:", error);
+        // console.error("Error in getUserResume:", error);
         res.status(500).json({message: "Server Error"});
     }
 }
@@ -49,7 +49,7 @@ export const getResumeById = async (req, res) => {
     try{
         const userId = req.user.id;
         const { resumeId } = req.params;
-        console.log(resumeId, "id miliii??")
+        // console.log(resumeId, "id miliii??")
         const resume = await Resume.findOne({ _id: resumeId, userId });
 
         if(!resume){
@@ -59,7 +59,7 @@ export const getResumeById = async (req, res) => {
         res.status(200).json({resume});
     }
     catch(error){
-        console.error("Error in getUserResume:", error);
+        // console.error("Error in getUserResume:", error);
         res.status(500).json({message: "Server Error"});
     }
 }
@@ -70,7 +70,7 @@ export const updateResume = async (req, res) => {
         const userId = req.user.id;
         const { resumeId, resumeData, removeBackground } = req.body;
         const image = req.file;
-        console.log(resumeData)
+        // console.log(resumeData)
         let resumeDataCopy;
 
         if (typeof resumeData === "string") {
@@ -124,7 +124,7 @@ export const updateResume = async (req, res) => {
         });
     }
     catch(error){
-        console.error("Error in getUserResume:", error);
+        // console.error("Error in getUserResume:", error);
         res.status(500).json({message: "Server Error"});
     }
 }
@@ -146,7 +146,7 @@ export const getPublicResumeById = async (req, res) => {
         res.status(200).json({resume});
     }
     catch(error){
-        console.error("Error in getUserResume:", error);
+        // console.error("Error in getUserResume:", error);
         res.status(500).json({message: "Server Error"});
     }
 }
