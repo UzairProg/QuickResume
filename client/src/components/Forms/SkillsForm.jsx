@@ -31,7 +31,7 @@ function SkillsForm({data, onChange}) {
         newData.push(skillToAdd)
         onChange(newData)
         setSkill("")
-
+        toast.dismiss()
         toast.success("Skill Added!", {
             position: "top-center",
             autoClose: 5000,
