@@ -119,7 +119,7 @@ Make sure you have the following installed:
 
 1️⃣ **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/UzairProg/QuickResume
 cd QuickResume
 ```
 
@@ -300,5 +300,5 @@ This project is licensed under the **MIT License** - see the LICENSE file for de
 
 <div align="center">
   <p>⭐ Star this repo if you find it helpful!</p>
-  <p>Made with ❤️ by developers, for developers</p>
+  <p>~Uzair</p>
 </div>
