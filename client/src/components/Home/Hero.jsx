@@ -88,7 +88,7 @@ const hero = () => {
                     </div>
                 </nav>
 
-                <div className="relative z-10 flex flex-wrap items-center justify-center gap-2.5 pl-3 pr-4 py-2 mt-16 rounded-full bg-gradient-to-r from-violet-100/80 via-purple-100/70 to-blue-100/80 backdrop-blur-sm border border-violet-300/60 shadow-lg shadow-violet-200/50">
+                <div className="relative z-10 flex flex-wrap items-center justify-center gap-2.5 pl-3 pr-4 py-2 mt-8 rounded-full bg-gradient-to-r from-violet-100/80 via-purple-100/70 to-blue-100/80 backdrop-blur-sm border border-violet-300/60 shadow-lg shadow-violet-200/50">
                     <div className="relative flex size-3.5 items-center justify-center">
                         <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping duration-300"></span>
                         <span className="relative inline-flex size-2 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 shadow-lg shadow-emerald-500/50"></span>
@@ -96,16 +96,16 @@ const hero = () => {
                     <p className="text-sm font-semibold bg-gradient-to-r from-violet-800 via-purple-700 to-blue-800 bg-clip-text text-transparent">✨ Try it out yourself!</p>
                 </div>
 
-                <h1 className='relative z-10 text-5xl md:text-7xl text-center max-w-4xl mt-10 font-bold leading-tight'>
+                <h1 className='relative z-10 text-4xl md:text-6xl text-center max-w-4xl mt-6 font-bold leading-tight'>
                     <span className='bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 bg-clip-text text-transparent drop-shadow-sm'>Craft Resumes That</span>
                     <br/>
                     <span className='bg-gradient-to-r from-violet-600 via-fuchsia-600 to-purple-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-[gradient-shift_3s_ease_infinite] drop-shadow-lg'>Get You Noticed</span>
                 </h1>
-                <p className="relative z-10 text-lg text-gray-700 text-center max-w-2xl mt-6 leading-relaxed">
+                <p className="relative z-10 text-base text-gray-700 text-center max-w-2xl mt-4 leading-relaxed">
                     Stand out from the crowd with <span className="font-bold bg-gradient-to-r from-violet-700 to-purple-700 bg-clip-text text-transparent">AI-powered resume building</span>. Get smart suggestions, see changes in real-time, and create job-winning resumes that actually land interviews.
                 </p>
 
-                <div className='relative z-10 flex flex-wrap justify-center gap-4 mt-12'>
+                <div className='relative z-10 flex flex-wrap justify-center gap-4 mt-6'>
                     {/* <button className="bg-violet-600 hover:bg-violet-700 text-white text-xs md:text-sm px-6 py-3 rounded-lg transition cursor-pointer">
                         Get Started Now
                     </button> */}
@@ -118,24 +118,24 @@ const hero = () => {
             </a>
                 </div>
 
-                <div className='relative z-10 w-full max-w-[800px] h-[2px] mt-16 bg-gradient-to-r from-transparent via-violet-400 to-transparent shadow-lg shadow-violet-300/50'></div>
+                <div className='relative z-10 w-full max-w-[800px] h-[2px] mt-8 bg-gradient-to-r from-transparent via-violet-400 to-transparent shadow-lg shadow-violet-300/50'></div>
 
-                <div className='relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 py-16 max-w-[930px] w-full'>
-                    <div className='text-center group cursor-default p-4 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
-                        <h2 className='font-bold text-3xl md:text-4xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>4</h2>
-                        <p className='text-sm md:text-base text-gray-700 mt-1 font-semibold'>Resume Templates</p>
+                <div className='relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 py-8 max-w-[930px] w-full'>
+                    <div className='text-center group cursor-default p-3 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
+                        <h2 className='font-bold text-2xl md:text-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>4</h2>
+                        <p className='text-xs md:text-sm text-gray-700 mt-1 font-semibold'>Resume Templates</p>
                     </div>
-                    <div className='text-center group cursor-default p-4 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
-                        <h2 className='font-bold text-3xl md:text-4xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>&lt;2min</h2>
-                        <p className='text-sm md:text-base text-gray-700 mt-1 font-semibold'>Average Build Time</p>
+                    <div className='text-center group cursor-default p-3 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
+                        <h2 className='font-bold text-2xl md:text-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>&lt;2min</h2>
+                        <p className='text-xs md:text-sm text-gray-700 mt-1 font-semibold'>Average Build Time</p>
                     </div>
-                    <div className='text-center group cursor-default p-4 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
-                        <h2 className='font-bold text-3xl md:text-4xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>AI</h2>
-                        <p className='text-sm md:text-base text-gray-700 mt-1 font-semibold'>Smart Suggestions</p>
+                    <div className='text-center group cursor-default p-3 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
+                        <h2 className='font-bold text-2xl md:text-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>AI</h2>
+                        <p className='text-xs md:text-sm text-gray-700 mt-1 font-semibold'>Smart Suggestions</p>
                     </div>
-                    <div className='text-center group cursor-default p-4 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
-                        <h2 className='font-bold text-3xl md:text-4xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>100%</h2>
-                        <p className='text-sm md:text-base text-gray-700 mt-1 font-semibold'>Free to Use</p>
+                    <div className='text-center group cursor-default p-3 rounded-2xl transition-all duration-300 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:shadow-lg hover:shadow-violet-200/50'>
+                        <h2 className='font-bold text-2xl md:text-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300'>100%</h2>
+                        <p className='text-xs md:text-sm text-gray-700 mt-1 font-semibold'>Free to Use</p>
                     </div>
                 </div>
             </section>
